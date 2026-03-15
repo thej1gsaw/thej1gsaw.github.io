@@ -1,0 +1,14 @@
+[
+  {
+    "name": "binary_exploit.py",
+    "path": "files/binary_exploit.py",
+    "size": 4096,
+    "date": "2025-03-10"
+  },
+  {
+    "name": "writeup.pdf",
+    "path": "files/writeup.pdf",
+    "size": 51200,
+    "date": "2025-02-28"
+  }
+]
