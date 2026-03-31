@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -214,7 +215,7 @@ kbd{display:inline-block;border:1px solid var(--border);background:rgba(0,255,65
 <div id="toast"></div>
 
 <nav>
-  <div class="nav-logo">j1gs4w<span class="blink">_</span></div>
+  <div class="nav-logo">j1gsaw<span class="blink">_</span></div>
   <div class="nav-clock" id="nav-clock">00:00:00</div>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
@@ -231,7 +232,7 @@ kbd{display:inline-block;border:1px solid var(--border);background:rgba(0,255,65
   <div class="hero-grid"></div>
   <div class="hero-content">
     <span class="hero-tag">// root@0xdead:~$ whoami</span>
-    <div class="hero-name" data-text="j1gs4w">j1gs4w</div>
+    <div class="hero-name" data-text="j1gsaw">j1gsaw</div>
     <div class="hero-subtitle">Reverse Engineering &nbsp;·&nbsp; Binary Exploitation &nbsp;·&nbsp; Automated/Manual Vulnerability Research</div>
     <p class="hero-desc">Tearing apart binaries, breaking assumptions, and turning undefined behaviour into control flow. Specialising in low-level exploitation, RE, and vulnerability research.</p>
     <div class="hero-badges">
@@ -245,6 +246,7 @@ kbd{display:inline-block;border:1px solid var(--border);background:rgba(0,255,65
 <hr class="divider">
 
 <!-- 01 ABOUT -->
+
 <section id="about">
   <div class="section-header"><span class="section-num">01</span><span class="section-title">System Init</span><div class="section-line"></div></div>
   <div class="skills-wrap" id="skill-bars">
@@ -255,14 +257,15 @@ kbd{display:inline-block;border:1px solid var(--border);background:rgba(0,255,65
     <div class="skill-row"><span class="skill-label">Firmware Analysis</span><div class="skill-bar-bg"><div class="skill-bar-fill" data-pct="72"></div></div><span class="skill-pct">72%</span></div>
   </div>
   <div class="terminal">
-    <div class="terminal-bar"><div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div><span class="terminal-title">bash — j1gs4w@0xdead [interactive]</span><span class="copy-hint">type 'help'</span></div>
+    <div class="terminal-bar"><div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div><span class="terminal-title">bash — j1gsaw@0xdead [interactive]</span><span class="copy-hint">type 'help'</span></div>
     <div id="live-term-body"></div>
-    <div class="live-input-row"><span>j1gs4w@0xdead:~$&nbsp;</span><input id="term-input" autocomplete="off" spellcheck="false" placeholder="enter command..."></div>
+    <div class="live-input-row"><span>j1gsaw@0xdead:~$&nbsp;</span><input id="term-input" autocomplete="off" spellcheck="false" placeholder="enter command..."></div>
   </div>
 </section>
 <hr class="divider">
 
 <!-- 02 SPECIALTIES -->
+
 <section id="specialties">
   <div class="section-header"><span class="section-num">02</span><span class="section-title">Capabilities</span><div class="section-line"></div></div>
   <div class="spec-grid">
@@ -277,6 +280,7 @@ kbd{display:inline-block;border:1px solid var(--border);background:rgba(0,255,65
 <hr class="divider">
 
 <!-- 03 CHEAT SHEET + ENCODER -->
+
 <section id="cheatsheet">
   <div class="section-header"><span class="section-num">03</span><span class="section-title">Linux Cheat Sheet</span><div class="section-line"></div></div>
   <div class="cheat-cats">
@@ -398,6 +402,7 @@ kbd{display:inline-block;border:1px solid var(--border);background:rgba(0,255,65
 <hr class="divider">
 
 <!-- 04 RESEARCH -->
+
 <section id="examples">
   <div class="section-header"><span class="section-num">04</span><span class="section-title">Research</span><div class="section-line"></div></div>
   <p style="color:var(--text-dim);font-size:.8rem;margin-bottom:1.5rem;border-left:2px solid var(--green);padding-left:1rem;">Each entry contains the vulnerable C pattern and a working pwntools exploit. All content is for educational and research purposes.</p>
@@ -410,13 +415,16 @@ kbd{display:inline-block;border:1px solid var(--border);background:rgba(0,255,65
   </div>
   <div class="ex-grid">
 
-    <!-- BUFFER OVERFLOW -->
-    <div class="ex-card" data-excat="stack">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type stack">STACK</span><span class="ex-title">Buffer Overflow</span><span class="ex-lang">C · x86_64</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body open"><div class="ex-body-inner">
-        <div class="ex-desc">Writing past the end of a fixed-size stack buffer overwrites adjacent memory — including the saved return address. Controlling RIP gives an attacker code execution.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- BUFFER OVERFLOW -->
+<div class="ex-card" data-excat="stack">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type stack">STACK</span><span class="ex-title">Buffer Overflow</span><span class="ex-lang">C · x86_64</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body open"><div class="ex-body-inner">
+    <div class="ex-desc">Writing past the end of a fixed-size stack buffer overwrites adjacent memory — including the saved return address. Controlling RIP gives an attacker code execution.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-comment">// gcc -o bof bof.c -fno-stack-protector -no-pie</span>
 <span class="c-kw">#include</span> <span class="c-str">&lt;stdio.h&gt;</span>
 <span class="c-kw">void</span> <span class="c-fn">win</span>() { puts(<span class="c-str">"shell!"</span>); }
@@ -440,13 +448,16 @@ p.interactive()</div></div></div>
       </div></div>
     </div>
 
-    <!-- USE-AFTER-FREE -->
-    <div class="ex-card" data-excat="heap">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Use-After-Free (UAF)</span><span class="ex-lang">C · glibc</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body"><div class="ex-body-inner">
-        <div class="ex-desc">A pointer is used after its memory has been freed. If an attacker reclaims that chunk with controlled data before the stale pointer is dereferenced, they control reads or function calls.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- USE-AFTER-FREE -->
+<div class="ex-card" data-excat="heap">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Use-After-Free (UAF)</span><span class="ex-lang">C · glibc</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body"><div class="ex-body-inner">
+    <div class="ex-desc">A pointer is used after its memory has been freed. If an attacker reclaims that chunk with controlled data before the stale pointer is dereferenced, they control reads or function calls.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-kw">typedef struct</span> { <span class="c-kw">char</span> name[<span class="c-num">32</span>]; <span class="c-kw">void</span>(*<span class="c-fn">greet</span>)(); } User;
 <span class="c-kw">void</span> <span class="c-fn">hello</span>()    { puts(<span class="c-str">"hello!"</span>); }
 <span class="c-kw">void</span> <span class="c-fn">backdoor</span>() { system(<span class="c-str">"/bin/sh"</span>); }
@@ -477,13 +488,16 @@ p.interactive()</div></div></div>
       </div></div>
     </div>
 
-    <!-- DOUBLE FREE -->
-    <div class="ex-card" data-excat="heap">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Double Free</span><span class="ex-lang">C · glibc tcache</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body"><div class="ex-body-inner">
-        <div class="ex-desc">Freeing the same pointer twice corrupts the tcache free-list into a loop. Poisoning the fd pointer redirects the next malloc() to an arbitrary address — arbitrary write primitive.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- DOUBLE FREE -->
+<div class="ex-card" data-excat="heap">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Double Free</span><span class="ex-lang">C · glibc tcache</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body"><div class="ex-body-inner">
+    <div class="ex-desc">Freeing the same pointer twice corrupts the tcache free-list into a loop. Poisoning the fd pointer redirects the next malloc() to an arbitrary address — arbitrary write primitive.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-kw">int</span> <span class="c-fn">main</span>() {
     <span class="c-kw">void</span> *a = <span class="c-fn">malloc</span>(<span class="c-num">0x28</span>);
     <span class="c-kw">void</span> *b = <span class="c-fn">malloc</span>(<span class="c-num">0x28</span>);
@@ -518,13 +532,16 @@ p.interactive()</div></div></div>
       </div></div>
     </div>
 
-    <!-- MEMORY LEAK -->
-    <div class="ex-card" data-excat="mem">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Memory Leak</span><span class="ex-lang">C · heap</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body"><div class="ex-body-inner">
-        <div class="ex-desc">Allocated memory never freed accumulates over time, exhausting the process heap. In privileged long-running processes stale buffers may also expose sensitive data.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- MEMORY LEAK -->
+<div class="ex-card" data-excat="mem">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Memory Leak</span><span class="ex-lang">C · heap</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body"><div class="ex-body-inner">
+    <div class="ex-desc">Allocated memory never freed accumulates over time, exhausting the process heap. In privileged long-running processes stale buffers may also expose sensitive data.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-kw">char</span> *<span class="c-fn">get_token</span>(<span class="c-kw">const char</span> *in) {
     <span class="c-kw">char</span> *buf = <span class="c-fn">malloc</span>(<span class="c-num">256</span>);  <span class="c-comment">// new alloc every call</span>
     <span class="c-fn">snprintf</span>(buf, <span class="c-num">256</span>, <span class="c-str">"TOKEN:%s"</span>, in);
@@ -552,13 +569,16 @@ p.interactive()</div></div></div>
       </div></div>
     </div>
 
-    <!-- OOB READ -->
-    <div class="ex-card" data-excat="mem">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Out-of-Bounds Read</span><span class="ex-lang">C · info leak</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body"><div class="ex-body-inner">
-        <div class="ex-desc">Reading beyond a buffer leaks adjacent memory — stack canaries, pointers, ASLR offsets, or cryptographic keys. Classic stage-1 primitive used before a write-based follow-up.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- OOB READ -->
+<div class="ex-card" data-excat="mem">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Out-of-Bounds Read</span><span class="ex-lang">C · info leak</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body"><div class="ex-body-inner">
+    <div class="ex-desc">Reading beyond a buffer leaks adjacent memory — stack canaries, pointers, ASLR offsets, or cryptographic keys. Classic stage-1 primitive used before a write-based follow-up.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-kw">void</span> <span class="c-fn">echo</span>(<span class="c-kw">uint8_t</span> *data, <span class="c-kw">size_t</span> claimed_len) {
     <span class="c-kw">uint8_t</span> secret[<span class="c-num">8</span>] = {<span class="c-num">0xde</span>,<span class="c-num">0xad</span>,<span class="c-num">0xbe</span>,<span class="c-num">0xef</span>,<span class="c-num">0xca</span>,<span class="c-num">0xfe</span>,<span class="c-num">0xba</span>,<span class="c-num">0xbe</span>};
     <span class="c-kw">uint8_t</span> buf[<span class="c-num">16</span>];
@@ -583,13 +603,16 @@ log.success(f'saved_rip = {hex(saved_rip)}')</div></div></div>
       </div></div>
     </div>
 
-    <!-- OOB WRITE -->
-    <div class="ex-card" data-excat="stack">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type stack">STACK</span><span class="ex-title">Out-of-Bounds Write</span><span class="ex-lang">C · stack/heap</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body"><div class="ex-body-inner">
-        <div class="ex-desc">Writing beyond a buffer corrupts adjacent memory — canary or RIP on stack, metadata or objects on heap. Classic BSS variable overwrite when adjacent globals are in scope.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- OOB WRITE -->
+<div class="ex-card" data-excat="stack">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type stack">STACK</span><span class="ex-title">Out-of-Bounds Write</span><span class="ex-lang">C · stack/heap</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body"><div class="ex-body-inner">
+    <div class="ex-desc">Writing beyond a buffer corrupts adjacent memory — canary or RIP on stack, metadata or objects on heap. Classic BSS variable overwrite when adjacent globals are in scope.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-kw">int</span> authenticated = <span class="c-num">0</span>;   <span class="c-comment">// BSS — adjacent to buf</span>
 <span class="c-kw">void</span> <span class="c-fn">login</span>(<span class="c-kw">const char</span> *username) {
     <span class="c-kw">char</span> buf[<span class="c-num">8</span>];
@@ -611,13 +634,16 @@ p.interactive()     # expect: "access granted"</div></div></div>
       </div></div>
     </div>
 
-    <!-- DANGLING POINTER -->
-    <div class="ex-card" data-excat="heap">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Dangling Pointer</span><span class="ex-lang">C · heap</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body"><div class="ex-body-inner">
-        <div class="ex-desc">A pointer that still holds the address of freed memory. Any future allocation can reclaim that region, making later dereferences controlled by an attacker.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- DANGLING POINTER -->
+<div class="ex-card" data-excat="heap">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type heap">HEAP</span><span class="ex-title">Dangling Pointer</span><span class="ex-lang">C · heap</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body"><div class="ex-body-inner">
+    <div class="ex-desc">A pointer that still holds the address of freed memory. Any future allocation can reclaim that region, making later dereferences controlled by an attacker.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-kw">typedef struct</span> { <span class="c-kw">int</span> id; <span class="c-kw">int</span> priv_level; } Session;
 Session *active;
 <span class="c-kw">void</span> <span class="c-fn">logout</span>() {
@@ -645,13 +671,16 @@ p.interactive()</div></div></div>
       </div></div>
     </div>
 
-    <!-- UNINITIALIZED MEMORY -->
-    <div class="ex-card" data-excat="mem">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Uninitialized Memory Usage</span><span class="ex-lang">C · stack/heap</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body"><div class="ex-body-inner">
-        <div class="ex-desc">Reading a variable before assignment uses whatever bytes happen to be in memory. Attackers who control prior allocations can influence these values to bypass checks or leak information.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- UNINITIALIZED MEMORY -->
+<div class="ex-card" data-excat="mem">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type mem">MEMORY</span><span class="ex-title">Uninitialized Memory Usage</span><span class="ex-lang">C · stack/heap</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body"><div class="ex-body-inner">
+    <div class="ex-desc">Reading a variable before assignment uses whatever bytes happen to be in memory. Attackers who control prior allocations can influence these values to bypass checks or leak information.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-kw">int</span> <span class="c-fn">check_license</span>(<span class="c-kw">int</span> input) {
     <span class="c-kw">int</span> valid;              <span class="c-bug">// BUG: uninitialised — stack garbage</span>
     <span class="c-kw">if</span> (input == <span class="c-num">0xc0ffee</span>) valid = <span class="c-num">1</span>;
@@ -682,13 +711,16 @@ p.interactive()</div></div></div>
       </div></div>
     </div>
 
-    <!-- ROP -->
-    <div class="ex-card" data-excat="rop">
-      <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type rop">ROP</span><span class="ex-title">Return-Oriented Programming</span><span class="ex-lang">x86_64 · NX + ASLR bypass</span><span class="ex-toggle">▼</span></div>
-      <div class="ex-body"><div class="ex-body-inner">
-        <div class="ex-desc">When NX/DEP prevents executing shellcode, ROP chains together small existing code sequences ("gadgets") each ending in <code style="color:var(--green);font-size:.85em">ret</code>, giving Turing-complete execution without writing a single new byte of code.</div>
-        <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
-        <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+<!-- ROP -->
+<div class="ex-card" data-excat="rop">
+  <div class="ex-header" onclick="toggleEx(this)"><span class="ex-type rop">ROP</span><span class="ex-title">Return-Oriented Programming</span><span class="ex-lang">x86_64 · NX + ASLR bypass</span><span class="ex-toggle">▼</span></div>
+  <div class="ex-body"><div class="ex-body-inner">
+    <div class="ex-desc">When NX/DEP prevents executing shellcode, ROP chains together small existing code sequences ("gadgets") each ending in <code style="color:var(--green);font-size:.85em">ret</code>, giving Turing-complete execution without writing a single new byte of code.</div>
+    <div class="ex-tabs"><button class="ex-tab active" onclick="switchTab(this,'vuln')">VULNERABLE CODE</button><button class="ex-tab" onclick="switchTab(this,'poc')">EXPLOIT / POC</button></div>
+    <div class="ex-pane active" data-pane="vuln"><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+```
+
 <div class="code-block"><span class="c-comment">// gcc -o rop_target rop_target.c -no-pie -fno-stack-protector</span>
 <span class="c-kw">void</span> <span class="c-fn">vuln</span>() {
     <span class="c-kw">char</span> buf[<span class="c-num">64</span>];
@@ -697,17 +729,19 @@ p.interactive()</div></div></div>
 <span class="c-kw">int</span> <span class="c-fn">main</span>() { <span class="c-fn">vuln</span>(); }
 
 <span class="c-comment">/* Stack after overflow:
- *  ┌─────────────────────────────────┐
- *  │  'A' × 72          (padding)    │
- *  │  pop rdi ; ret                  │ gadget 1
- *  │  &amp;"/bin/sh" in libc             │ rdi = "/bin/sh"
- *  │  ret                            │ gadget 2 (stack align)
- *  │  &amp;system() in libc              │ system("/bin/sh")
- *  └─────────────────────────────────┘
- * $ ROPgadget --binary ./rop_target | grep "pop rdi"
- * (pwndbg) rop --grep "pop rdi"
- */</span></div></div></div>
-        <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline critical">CRITICAL</span><div class="poc-meta-inline">x86_64 · NX + ASLR · PIE off · no canary</div><div class="poc-desc-inline">Two-stage exploit. Stage 1 leaks puts() from GOT to defeat ASLR. Stage 2 builds pop rdi → /bin/sh → system() with a ret gadget for glibc 2.35+ stack alignment.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+
+- ┌─────────────────────────────────┐
+- │  ‘A’ × 72          (padding)    │
+- │  pop rdi ; ret                  │ gadget 1
+- │  &”/bin/sh” in libc             │ rdi = “/bin/sh”
+- │  ret                            │ gadget 2 (stack align)
+- │  &system() in libc              │ system(”/bin/sh”)
+- └─────────────────────────────────┘
+- $ ROPgadget –binary ./rop_target | grep “pop rdi”
+- (pwndbg) rop –grep “pop rdi”
+  */</span></div></div></div>
+  <div class="ex-pane" data-pane="poc"><span class="poc-sev-inline critical">CRITICAL</span><div class="poc-meta-inline">x86_64 · NX + ASLR · PIE off · no canary</div><div class="poc-desc-inline">Two-stage exploit. Stage 1 leaks puts() from GOT to defeat ASLR. Stage 2 builds pop rdi → /bin/sh → system() with a ret gadget for glibc 2.35+ stack alignment.</div><div class="code-wrap"><button class="code-copy-btn" onclick="copyCode(this)">COPY</button>
+
 <div class="code-block">#!/usr/bin/env python3
 from pwn import *
 elf  = ELF('./rop_target', checksec=False)
@@ -745,6 +779,7 @@ p.interactive()</div></div></div>
 <hr class="divider">
 
 <!-- 05 PORTFOLIO -->
+
 <section id="portfolio">
   <div class="section-header"><span class="section-num">05</span><span class="section-title">Portfolio</span><div class="section-line"></div></div>
   <p style="color:var(--text-dim);font-size:.8rem;margin-bottom:1.5rem;border-left:2px solid var(--green);padding-left:1rem;">Write-ups, tools, scripts and research files.</p>
@@ -761,6 +796,7 @@ p.interactive()</div></div></div>
 <hr class="divider">
 
 <!-- 06 CONTACT -->
+
 <section id="contact">
   <div class="section-header"><span class="section-num">06</span><span class="section-title">Contact</span><div class="section-line"></div></div>
   <div class="contact-wrap">
@@ -803,7 +839,7 @@ p.interactive()</div></div></div>
 </section>
 
 <footer>
-  <span>j1gs4w</span> // root access not required to read the manual.
+  <span>j1gsaw</span> // root access not required to read the manual.
   <br><br>
   <span style="opacity:.4">0x6A316773347700 // all research for educational purposes</span>
   <br><br>
@@ -849,11 +885,11 @@ document.querySelectorAll('.spec-card').forEach((c,i)=>{c.style.transitionDelay=
 // ── LIVE TERMINAL ────────────────────────────────────
 const TB=document.getElementById('live-term-body'),TI=document.getElementById('term-input');
 let cmdHist=[],histIdx=-1;
-const FS={'about.txt':'Security researcher focused on RE and binary exploitation.','tools.txt':'IDA Pro · Ghidra · GDB · PWNDBG · pwntools · ROPgadget · AFL++','contact.txt':'j1gs4ws@proton.me','flag.txt':'j1gs4w{y0u_f0und_th3_fl4g_g00d_r3c0n_m8}','motd.txt':'Welcome to 0xdead.\nAll activity is logged.\nJust kidding. Or am I?'};
-const CMDS={help:()=>`<span style="color:var(--amber)">commands:</span>\n  whoami  id  pwd  uname -a  ls  ls -la\n  cat [file]  ps aux  netstat  history\n  echo [text]  date  uptime  clear  exit`,whoami:()=>'<span class="highlight">j1gs4w</span>',id:()=>'uid=0(<span class="highlight">root</span>) gid=0(root) groups=0(root),1337(hackers)',pwd:()=>'/home/j1gs4w',date:()=>new Date().toString(),uptime:()=>{const u=performance.now()/1000|0;return`${(u/3600|0).toString().padStart(2,'0')}:${((u%3600)/60|0).toString().padStart(2,'0')}:${(u%60).toString().padStart(2,'0')} up`;},clear:()=>{TB.innerHTML='';return null;},exit:()=>'<span style="color:var(--red)">logout (not really)</span>','sudo su':()=>'<span style="color:var(--green)">root@0xdead:~# [already root]</span>','uname -a':()=>'Linux 0xdead 6.6.0-pwn #1 SMP j1gs4w x86_64 GNU/Linux',ls:()=>'<span class="t-var">about.txt</span>  <span class="t-var">tools.txt</span>  <span class="t-var">contact.txt</span>  <span class="t-var">motd.txt</span>  <span style="color:var(--red)">flag.txt</span>  <span style="color:var(--amber)">exploits/</span>','ls -la':()=>`total 56\n-rw-r--r-- <span class="t-var">about.txt</span>\n-rw-r--r-- <span class="t-var">tools.txt</span>\n-rw-r--r-- <span class="t-var">contact.txt</span>\n-rw-r--r-- <span class="t-var">motd.txt</span>\n-r-------- <span style="color:var(--red)">flag.txt</span>\ndrwxr-xr-x <span style="color:var(--amber)">exploits/</span>`,'ps aux':()=>`j1gs4w  1337  4.2  ghidra\nj1gs4w  1338  2.1  ida64\nj1gs4w  1339  0.3  gdb ./vuln`,netstat:()=>`tcp  0.0.0.0:22     LISTEN\ntcp  127.0.0.1:4444 LISTEN`,history:()=>cmdHist.length?cmdHist.slice(-10).map((c,i)=>`  ${String(i+1).padStart(3,'0')} ${c}`).join('\n'):'  (empty)'};
+const FS={'about.txt':'Security researcher focused on RE and binary exploitation.','tools.txt':'IDA Pro · Ghidra · GDB · PWNDBG · pwntools · ROPgadget · AFL++','contact.txt':'j1gs4ws@proton.me','flag.txt':'j1gsaw{y0u_f0und_th3_fl4g_g00d_r3c0n_m8}','motd.txt':'Welcome to 0xdead.\nAll activity is logged.\nJust kidding. Or am I?'};
+const CMDS={help:()=>`<span style="color:var(--amber)">commands:</span>\n  whoami  id  pwd  uname -a  ls  ls -la\n  cat [file]  ps aux  netstat  history\n  echo [text]  date  uptime  clear  exit`,whoami:()=>'<span class="highlight">j1gsaw</span>',id:()=>'uid=0(<span class="highlight">root</span>) gid=0(root) groups=0(root),1337(hackers)',pwd:()=>'/home/j1gsaw',date:()=>new Date().toString(),uptime:()=>{const u=performance.now()/1000|0;return`${(u/3600|0).toString().padStart(2,'0')}:${((u%3600)/60|0).toString().padStart(2,'0')}:${(u%60).toString().padStart(2,'0')} up`;},clear:()=>{TB.innerHTML='';return null;},exit:()=>'<span style="color:var(--red)">logout (not really)</span>','sudo su':()=>'<span style="color:var(--green)">root@0xdead:~# [already root]</span>','uname -a':()=>'Linux 0xdead 6.6.0-pwn #1 SMP j1gsaw x86_64 GNU/Linux',ls:()=>'<span class="t-var">about.txt</span>  <span class="t-var">tools.txt</span>  <span class="t-var">contact.txt</span>  <span class="t-var">motd.txt</span>  <span style="color:var(--red)">flag.txt</span>  <span style="color:var(--amber)">exploits/</span>','ls -la':()=>`total 56\n-rw-r--r-- <span class="t-var">about.txt</span>\n-rw-r--r-- <span class="t-var">tools.txt</span>\n-rw-r--r-- <span class="t-var">contact.txt</span>\n-rw-r--r-- <span class="t-var">motd.txt</span>\n-r-------- <span style="color:var(--red)">flag.txt</span>\ndrwxr-xr-x <span style="color:var(--amber)">exploits/</span>`,'ps aux':()=>`j1gsaw  1337  4.2  ghidra\nj1gsaw  1338  2.1  ida64\nj1gsaw  1339  0.3  gdb ./vuln`,netstat:()=>`tcp  0.0.0.0:22     LISTEN\ntcp  127.0.0.1:4444 LISTEN`,history:()=>cmdHist.length?cmdHist.slice(-10).map((c,i)=>`  ${String(i+1).padStart(3,'0')} ${c}`).join('\n'):'  (empty)'};
 function tWrite(h){const d=document.createElement('div');d.innerHTML=h;TB.appendChild(d);TB.scrollTop=TB.scrollHeight;}
-function tExec(raw){const cmd=raw.trim();if(!cmd)return;cmdHist.push(cmd);histIdx=-1;tWrite(`<span class="t-prompt">j1gs4w@0xdead:~$</span> <span class="t-cmd">${esc(cmd)}</span>`);if(cmd.startsWith('cat ')){const f=cmd.slice(4).trim();FS[f]?tWrite(`<span class="t-output" style="white-space:pre">${esc(FS[f])}</span>`):tWrite(`<span style="color:var(--red)">cat: ${esc(f)}: No such file</span>`);return;}if(cmd.startsWith('echo ')){tWrite(`<span class="t-output">${esc(cmd.slice(5))}</span>`);return;}if(cmd.startsWith('sudo ')){const s=cmd.slice(5).trim();if(s==='su'||s==='-i'){tWrite(CMDS['sudo su']());return;}tWrite(`<span style="color:var(--red)">[sudo] password:</span>`);setTimeout(()=>tWrite(`<span style="color:var(--red)">Sorry, try again.</span>`),700);return;}const fn=CMDS[cmd];if(fn){const r=fn();if(r!==null)tWrite(`<span class="t-output" style="white-space:pre">${r}</span>`);}else tWrite(`<span style="color:var(--red)">bash: ${esc(cmd)}: command not found</span>`);}
-(async()=>{const lines=[`<span class="t-comment">// j1gs4w terminal — type 'help'</span>`,`<span class="t-output">ASLR: <span style="color:var(--amber)">disabled</span></span>`,''];for(const l of lines){await new Promise(r=>setTimeout(r,180));tWrite(l);}TI.focus();})();
+function tExec(raw){const cmd=raw.trim();if(!cmd)return;cmdHist.push(cmd);histIdx=-1;tWrite(`<span class="t-prompt">j1gsaw@0xdead:~$</span> <span class="t-cmd">${esc(cmd)}</span>`);if(cmd.startsWith('cat ')){const f=cmd.slice(4).trim();FS[f]?tWrite(`<span class="t-output" style="white-space:pre">${esc(FS[f])}</span>`):tWrite(`<span style="color:var(--red)">cat: ${esc(f)}: No such file</span>`);return;}if(cmd.startsWith('echo ')){tWrite(`<span class="t-output">${esc(cmd.slice(5))}</span>`);return;}if(cmd.startsWith('sudo ')){const s=cmd.slice(5).trim();if(s==='su'||s==='-i'){tWrite(CMDS['sudo su']());return;}tWrite(`<span style="color:var(--red)">[sudo] password:</span>`);setTimeout(()=>tWrite(`<span style="color:var(--red)">Sorry, try again.</span>`),700);return;}const fn=CMDS[cmd];if(fn){const r=fn();if(r!==null)tWrite(`<span class="t-output" style="white-space:pre">${r}</span>`);}else tWrite(`<span style="color:var(--red)">bash: ${esc(cmd)}: command not found</span>`);}
+(async()=>{const lines=[`<span class="t-comment">// j1gsaw terminal — type 'help'</span>`,`<span class="t-output">ASLR: <span style="color:var(--amber)">disabled</span></span>`,''];for(const l of lines){await new Promise(r=>setTimeout(r,180));tWrite(l);}TI.focus();})();
 TI.addEventListener('keydown',e=>{if(e.key==='Enter'){tExec(TI.value);TI.value='';}else if(e.key==='ArrowUp'&&cmdHist.length){histIdx=Math.min(histIdx+1,cmdHist.length-1);TI.value=cmdHist[cmdHist.length-1-histIdx];}else if(e.key==='ArrowDown'){histIdx=Math.max(histIdx-1,-1);TI.value=histIdx>=0?cmdHist[cmdHist.length-1-histIdx]:'';}});
 document.getElementById('about').addEventListener('click',()=>{if(document.activeElement!==TI)TI.focus();});
 
@@ -908,10 +944,11 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 // ── KONAMI CODE ──────────────────────────────────────
 const KONAMI=[38,38,40,40,37,39,37,39,66,65];let ki=0;
 document.addEventListener('keydown',e=>{if(e.keyCode===KONAMI[ki]){ki++;if(ki===KONAMI.length){ki=0;triggerRoot();}}else ki=0;});
-function triggerRoot(){const ov=document.getElementById('root-overlay'),rt=document.getElementById('root-text');ov.classList.add('show');rt.textContent='';const lines=['KONAMI CODE ACCEPTED','','> spawning root shell...','> uid=0(root) gid=0(root)','','WELCOME TO THE MACHINE','','j1gs4w@0xdead:~#'];let i=0;const iv=setInterval(()=>{if(i>=lines.length){clearInterval(iv);return;}rt.textContent+=lines[i]+'\n';i++;},260);}
+function triggerRoot(){const ov=document.getElementById('root-overlay'),rt=document.getElementById('root-text');ov.classList.add('show');rt.textContent='';const lines=['KONAMI CODE ACCEPTED','','> spawning root shell...','> uid=0(root) gid=0(root)','','WELCOME TO THE MACHINE','','j1gsaw@0xdead:~#'];let i=0;const iv=setInterval(()=>{if(i>=lines.length){clearInterval(iv);return;}rt.textContent+=lines[i]+'\n';i++;},260);}
 
 // ── HELPER ───────────────────────────────────────────
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 </script>
+
 </body>
 </html>
